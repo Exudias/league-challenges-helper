@@ -203,4 +203,30 @@ body
     font-weight: 500;
 
     color: #CDFAFA;
+    transition: linear 0.25s;
+}
+
+#search-button:disabled 
+{
+    opacity: 20%;
+}
+
+#search-button:hover 
+{
+    background-color: #0397AB;
+    border-width: 1px 2px;
+}
+
+#search-button:active 
+{
+    background-color: #0397AB;
+    border-width: 1px 2px;
+    
+    color: #0A323C;
+}
+
+#search-button:hover 
+{
+    background-color: #0397AB;
+    border-width: 1px 2px;
 }
