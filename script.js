@@ -24,6 +24,7 @@ const CHALLENGE_PLAYER_DATA_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/pla
 function updateChallengesInformation()
 {
     challengeInfodatabaseLoaded = false;
+    searchButton.disabled = true;
     console.log("[INFO]: LOADING CHALLENGES CONFIG DATABASE...");
     const CONFIG_FULL_ENDPOINT = "https://" + currentRegion + CHALLENGES_CONFIG_ENDPOINT;
 
@@ -34,9 +35,10 @@ function updateChallengesInformation()
     xhr.onload = () => 
     {
         if (xhr.readyState == 4 && xhr.status == 200) 
-        {
+        {   
             activeChallenges = getAllActiveChallengesFromConfig(JSON.parse(xhr.response));
             challengeInfodatabaseLoaded = true;
+            searchButton.disabled = false;
             console.log("[INFO]: CHALLENGES CONFIG DATABASE LOADED!");
         } 
         else 
@@ -138,19 +140,46 @@ regionSelector.addEventListener("change", () => {
 });
 
 // Player search
+const resultsBox = document.querySelector("#results");
 const searchButton = document.querySelector("#search-button");
 const playerNameInput = document.querySelector("#player-name");
+let nonMaxedChallenges = [];
 searchButton.addEventListener("click", async () => {
     currentPlayer = playerNameInput.value;
-    let challengeData;
+    let playerData;
     try
     {
-        challengeData = await getChallengeDataFromName(currentPlayer);
+        playerData = await getChallengeDataFromName(currentPlayer);
     }
     catch
     {
         alert("Player not found!");
+        // Perhaps some UI feedback that's not an alert...
+        return;
     }
+    const challengeData = playerData.challenges;
+    const playerChallengeIDs = challengeData.map(challenge => challenge.challengeId);
+    nonMaxedChallenges = [];
+    activeChallenges.forEach(challenge => {
+        if (playerChallengeIDs.includes(challenge.id))
+        {
+            const challengeMaxLevelIndex = CHALLENGE_LEVELS.indexOf(challenge.maxLevel);
+            const currentChallengeData = challengeData.filter(data => {
+                return data.challengeId === challenge.id;
+            })[0];
+            const playerLevel = CHALLENGE_LEVELS.indexOf(currentChallengeData.level);
+            challenge.playerLevel = CHALLENGE_LEVELS[playerLevel];
+            if (playerLevel < challengeMaxLevelIndex)
+            {
+                nonMaxedChallenges.push(challenge);
+            }
+        }
+        else
+        {
+            challenge.playerLevel = -1;
+            nonMaxedChallenges.push(challenge);
+        }
+    });
 });
 
 initialize();
