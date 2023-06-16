@@ -46,46 +46,20 @@ function updateChallengesInformation()
     }
 }
 
-function getChallengeDataFromName(name)
+async function getChallengeDataFromName(name)
 {
     const SUMMONER_BY_NAME_FULL_ENDPOINT = "https://" + currentRegion + SUMMONER_BY_NAME_ENDPOINT + name;
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", SUMMONER_BY_NAME_FULL_ENDPOINT + "?api_key=" + API_KEY);
-    xhr.send();
+    const summoner = await makeRequest("GET", SUMMONER_BY_NAME_FULL_ENDPOINT + "?api_key=" + API_KEY);
 
-    xhr.onload = () => 
-    {
-        if (xhr.readyState == 4 && xhr.status == 200) 
-        {
-            return getChallengeDataFromPUUID(JSON.parse(xhr.response).puuid);
-        } 
-        else 
-        {
-            alert(`Error: ${xhr.status}`);
-        }
-    }
+    return await getChallengeDataFromPUUID(JSON.parse(summoner).puuid);
 }
 
-function getChallengeDataFromPUUID(puuid)
+async function getChallengeDataFromPUUID(puuid)
 {
     const CHALLENGE_PLAYER_DATA_FULL_ENDPOINT = "https://" + currentRegion + CHALLENGE_PLAYER_DATA_ENDPOINT + puuid;
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", CHALLENGE_PLAYER_DATA_FULL_ENDPOINT + "?api_key=" + API_KEY);
-    xhr.send();
-
-    xhr.onload = () => 
-    {
-        if (xhr.readyState == 4 && xhr.status == 200) 
-        {
-            return JSON.parse(xhr.response);
-        } 
-        else 
-        {
-            alert(`Error: ${xhr.status}`);
-        }
-    }
+    return JSON.parse(await makeRequest("GET", CHALLENGE_PLAYER_DATA_FULL_ENDPOINT + "?api_key=" + API_KEY));
 }
 
 function getMaxThreshold(challengeThresholds)
@@ -124,6 +98,31 @@ function initialize()
     updateChallengesInformation();
 }
 
+// xhr request with promise (from https://stackoverflow.com/a/48969580)
+function makeRequest(method, url) {
+    return new Promise(function (resolve, reject) {
+        let xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.onload = function () {
+            if (this.status >= 200 && this.status < 300) {
+                resolve(xhr.response);
+            } else {
+                reject({
+                    status: this.status,
+                    statusText: xhr.statusText
+                });
+            }
+        };
+        xhr.onerror = function () {
+            reject({
+                status: this.status,
+                statusText: xhr.statusText
+            });
+        };
+        xhr.send();
+    });
+}
+
 //// BELOW - CALLED ON SCRIPT LOAD!!!
 
 let activeChallenges;
@@ -143,7 +142,15 @@ const searchButton = document.querySelector("#search-button");
 const playerNameInput = document.querySelector("#player-name");
 searchButton.addEventListener("click", async () => {
     currentPlayer = playerNameInput.value;
-    const challengeData = getChallengeDataFromName(currentPlayer);
+    let challengeData;
+    try
+    {
+        challengeData = await getChallengeDataFromName(currentPlayer);
+    }
+    catch
+    {
+        alert("Player not found!");
+    }
 });
 
 initialize();
