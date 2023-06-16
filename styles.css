@@ -1,0 +1,206 @@
+@font-face 
+{
+    font-family: beaufort;
+    src: url(fonts/Beaufort/BeaufortforLOL-Heavy.ttf);
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face 
+{
+    font-family: beaufort;
+    src: url(fonts/Beaufort/BeaufortforLOL-HeavyItalic.ttf);
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face 
+{
+    font-family: beaufort;
+    src: url(fonts/Beaufort/BeaufortforLOL-Bold.ttf);
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face 
+{
+    font-family: beaufort;
+    src: url(fonts/Beaufort/BeaufortforLOL-BoldItalic.ttf);
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face 
+{
+    font-family: beaufort;
+    src: url(fonts/Beaufort/BeaufortforLOL-Medium.ttf);
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face 
+{
+    font-family: beaufort;
+    src: url(fonts/Beaufort/BeaufortforLOL-MediumItalic.ttf);
+    font-weight: 500;
+    font-style: italic;
+}
+
+
+@font-face 
+{
+    font-family: beaufort;
+    src: url(fonts/Beaufort/BeaufortforLOL-Regular.ttf);
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face 
+{
+    font-family: beaufort;
+    src: url(fonts/Beaufort/BeaufortforLOL-Italic.ttf);
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face 
+{
+    font-family: beaufort;
+    src: url(fonts/Beaufort/BeaufortforLOL-Light.ttf);
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face 
+{
+    font-family: beaufort;
+    src: url(fonts/Beaufort/BeaufortforLOL-LightItalic.ttf);
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face 
+{
+    font-family: spiegel;
+    src: url(fonts/Spiegel/Spiegel_TT_Bold.ttf);
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face 
+{
+    font-family: spiegel;
+    src: url(fonts/Spiegel/Spiegel_TT_Bold_Italic.ttf);
+    font-weight: 700;
+    font-style: italic;
+}
+
+
+@font-face 
+{
+    font-family: spiegel;
+    src: url(fonts/Spiegel/Spiegel_TT_SemiBold.ttf);
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face 
+{
+    font-family: spiegel;
+    src: url(fonts/Spiegel/Spiegel_TT_SemiBold_Italic.ttf);
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face 
+{
+    font-family: spiegel;
+    src: url(fonts/Spiegel/Spiegel_TT_Regular.ttf);
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face 
+{
+    font-family: spiegel;
+    src: url(fonts/Spiegel/Spiegel_TT_Regular_Italic.ttf);
+    font-weight: 400;
+    font-style: italic;
+}
+
+body
+{
+    background-color: #010A13;
+    color: #CDFAFA;
+}
+
+#main-container {
+    font-family: beaufort;
+    color: #C8AA6E;
+    font-weight: 700;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+#title-box {
+    font-size: 48px;
+}
+
+#region-select-box {
+    font-size: 32px;
+    line-height: 32px;
+}
+
+#region {
+    width: 160px;
+    height: 32px;
+
+    background-color: #010A13;
+    border: 2px solid #C8AA6E;
+    
+    color: #CDFAFA;
+    font-family: spiegel;
+    font-size: 24px;
+}
+
+#player-input-box {
+    font-size: 32px;
+    line-height: 32px;
+}
+
+#player-name {
+    width: 160px;
+    height: 32px;
+    
+    background-color: #010A13;
+    border: 2px solid #C8AA6E;
+    
+    color: #CDFAFA;
+    font-family: spiegel;
+    font-size: 32px;
+}
+
+#search-button-box {
+
+}
+
+#search-button {
+    width: 360px;
+    height: 64px;
+    
+    background-color: #143E4D;
+
+    border: #2CB0F0 solid 8px;
+    border-width: 4px 8px;
+    border-radius: 24px;
+
+    font-family: beaufort;
+    font-size: 48px;
+    line-height: 48px;
+    font-weight: 500;
+
+    color: #CDFAFA;
+}
