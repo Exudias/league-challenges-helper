@@ -1,3 +1,4 @@
+// Important constants
 const API_KEY = "RGAPI-aa4f17eb-52f6-42e0-83bc-6ef8fc0d0776";
 
 const CHALLENGE_LEVELS = 
@@ -13,25 +14,27 @@ const CHALLENGE_LEVELS =
     "CHALLENGER"
 ];
 
-// Get information about ALL challenges that currently exist
-const CHALLENGES_CONFIG_ENDPOINT_EUW = "https://euw1.api.riotgames.com/lol/challenges/v1/challenges/config";
+const CHALLENGES_CONFIG_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/config";
 
-let challengesConfig;
-let activeChallenges;
-
-const xhr = new XMLHttpRequest();
-xhr.open("GET", CHALLENGES_CONFIG_ENDPOINT_EUW + "?api_key=" + API_KEY);
-xhr.send();
-xhr.onload = () => 
+// Functions
+function updateChallengesInformation()
 {
-    if (xhr.readyState == 4 && xhr.status == 200) 
+    const CONFIG_FULL_ENDPOINT = "https://" + currentRegion + CHALLENGES_CONFIG_ENDPOINT;
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", CONFIG_FULL_ENDPOINT + "?api_key=" + API_KEY);
+    xhr.send();
+
+    xhr.onload = () => 
     {
-        challengesConfig = JSON.parse(xhr.response);
-        getAllActiveChallenges();
-    } 
-    else 
-    {
-        alert(`Error: ${xhr.status}`);
+        if (xhr.readyState == 4 && xhr.status == 200) 
+        {
+            activeChallenges = getAllActiveChallengesFromConfig(JSON.parse(xhr.response));
+        } 
+        else 
+        {
+            alert(`Error: ${xhr.status}`);
+        }
     }
 }
 
@@ -47,10 +50,10 @@ function getMaxThreshold(challengeThresholds)
     return current_max;
 }
 
-function getAllActiveChallenges()
+function getAllActiveChallengesFromConfig(config)
 {
-    activeChallenges = [];
-    challengesConfig.forEach(challenge => {
+    result = [];
+    config.forEach(challenge => {
         if (challenge.state === "ENABLED")
         {
             activeChallengeObject = 
@@ -60,7 +63,27 @@ function getAllActiveChallenges()
                 thresholds: challenge.thresholds,
                 maxLevel: getMaxThreshold(challenge.thresholds),
             };
-            activeChallenges.push(activeChallengeObject);
+            result.push(activeChallengeObject);
         }
     });
+    return result;
 }
+
+function initialize()
+{
+    updateChallengesInformation();
+}
+
+//// BELOW - CALLED ON SCRIPT LOAD!!!
+
+let activeChallenges;
+
+// Region selection
+const regionSelector = document.querySelector("#region");
+let currentRegion = regionSelector.value;
+regionSelector.addEventListener("change", () => {
+    currentRegion = regionSelector.value;
+    updateChallengesInformation();
+});
+
+initialize();
