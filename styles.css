@@ -196,6 +196,16 @@ body
     width: 100%;
     font-size: 30px;
     color: #A09B8C;
+
+    display: flex;
+}
+
+.suggestion-column {
+    flex: 1;
+}
+
+.suggestion-column p {
+    color: #CDFAFA;
 }
 
 #search-button {

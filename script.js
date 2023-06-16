@@ -259,5 +259,8 @@ searchButton.addEventListener("click", async () => {
 
 // Challenge display
 const challengesBox = document.querySelector("#challenges-box");
+const lowestTierColumn = document.querySelector("#lowest-tier");
+const tiersToGoColumn = document.querySelector("#tiers-to-go");
+const highestPercentileColumn = document.querySelector("#highest-percentile");
 
 initialize();
