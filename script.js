@@ -19,6 +19,8 @@ const CHALLENGES_CONFIG_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challen
 // Functions
 function updateChallengesInformation()
 {
+    challengeInfodatabaseLoaded = false;
+    console.log("[INFO]: LOADING CHALLENGES CONFIG DATABASE...");
     const CONFIG_FULL_ENDPOINT = "https://" + currentRegion + CHALLENGES_CONFIG_ENDPOINT;
 
     const xhr = new XMLHttpRequest();
@@ -30,6 +32,8 @@ function updateChallengesInformation()
         if (xhr.readyState == 4 && xhr.status == 200) 
         {
             activeChallenges = getAllActiveChallengesFromConfig(JSON.parse(xhr.response));
+            challengeInfodatabaseLoaded = true;
+            console.log("[INFO]: CHALLENGES CONFIG DATABASE LOADED!");
         } 
         else 
         {
@@ -77,6 +81,8 @@ function initialize()
 //// BELOW - CALLED ON SCRIPT LOAD!!!
 
 let activeChallenges;
+let currentPlayer;
+let challengeInfodatabaseLoaded = false;
 
 // Region selection
 const regionSelector = document.querySelector("#region");
@@ -84,6 +90,13 @@ let currentRegion = regionSelector.value;
 regionSelector.addEventListener("change", () => {
     currentRegion = regionSelector.value;
     updateChallengesInformation();
+});
+
+// Player search
+const searchButton = document.querySelector("#search-button");
+const playerNameInput = document.querySelector("#player-name");
+searchButton.addEventListener("click", () => {
+    currentPlayer = playerNameInput.value;
 });
 
 initialize();
