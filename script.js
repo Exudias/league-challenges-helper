@@ -17,12 +17,14 @@ const CHALLENGE_LEVELS =
 ];
 
 const CHALLENGES_CONFIG_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/config";
+const CHALLENGE_PERCENTILES_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/percentiles";
 const SUMMONER_BY_NAME_ENDPOINT = ".api.riotgames.com/lol/summoner/v4/summoners/by-name/";
 const CHALLENGE_PLAYER_DATA_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/player-data/";
 
 // Functions
-function updateChallengesInformation()
+async function updateChallengesInformation()
 {
+    challengePercentiles = JSON.parse(await getChallengePercentiles());
     challengeInfodatabaseLoaded = false;
     searchButton.disabled = true;
     console.log("[INFO]: LOADING CHALLENGES CONFIG DATABASE...");
@@ -46,6 +48,13 @@ function updateChallengesInformation()
             alert(`Error: ${xhr.status}`);
         }
     }
+}
+
+async function getChallengePercentiles()
+{
+    const CHALLENGE_PERCENTILES_FULL_ENDPOINT = "https://" + currentRegion + CHALLENGE_PERCENTILES_ENDPOINT;
+
+    return await makeRequest("GET", CHALLENGE_PERCENTILES_FULL_ENDPOINT + "?api_key=" + API_KEY);
 }
 
 async function getChallengeDataFromName(name)
@@ -73,7 +82,7 @@ function getMaxThreshold(challengeThresholds)
             current_max = level;
         }
     });
-    return current_max;
+    return CHALLENGE_LEVELS.indexOf(current_max);
 }
 
 function getAllActiveChallengesFromConfig(config)
@@ -125,9 +134,63 @@ function makeRequest(method, url) {
     });
 }
 
+function beginDisplay()
+{
+    const sortedByLowestTier = [...nonMaxedChallenges].sort((a, b) => {
+        return a.playerLevel - b.playerLevel;
+    });
+    const sortedByTiersToGo = [...nonMaxedChallenges].sort((a, b) => {
+        let aTiers = a.maxLevel - a.playerLevel;
+        let bTiers = b.maxLevel - b.playerLevel;
+        return bTiers - aTiers;
+    });
+    const sortedByPercentile = [...nonMaxedChallenges].filter(chall => {
+        let nextLevel = getNextTierNumber(chall);
+        chall.nextLevel = nextLevel;
+        return nextLevel !== -1;
+    }).sort((a, b) => {
+        let aId = a.id;
+        let aTierName = CHALLENGE_LEVELS[a.nextLevel];
+        let aTierPercentile = getChallengeTierPercentile(aId, aTierName);
+        let bId = b.id;
+        let bTierName = CHALLENGE_LEVELS[b.nextLevel];
+        let bTierPercentile = getChallengeTierPercentile(bId, bTierName);
+
+        a.nextPercentile = aTierPercentile;
+        b.nextPercentile = bTierPercentile;
+
+        return bTierPercentile - aTierPercentile;
+    });
+}
+
+function getChallengeTierPercentile(challengeId, challengeTierName)
+{
+    return challengePercentiles[challengeId][challengeTierName];
+}
+
+function getNextTierNumber(challenge)
+{
+    let playerLevel = challenge.playerLevel;
+    let thresholds = challenge.thresholds;
+
+    let result = undefined;
+
+    CHALLENGE_LEVELS.forEach(level => {
+        if (result !== undefined) return; 
+        const levelIndex = CHALLENGE_LEVELS.indexOf(level);
+        if (levelIndex > playerLevel && level in thresholds)
+        {
+            result = levelIndex;
+            return;
+        }
+    });
+    return result;
+}
+
 //// BELOW - CALLED ON SCRIPT LOAD!!!
 
 let activeChallenges;
+let challengePercentiles;
 let currentPlayer;
 let challengeInfodatabaseLoaded = false;
 
@@ -161,14 +224,25 @@ searchButton.addEventListener("click", async () => {
     const playerChallengeIDs = challengeData.map(challenge => challenge.challengeId);
     nonMaxedChallenges = [];
     activeChallenges.forEach(challenge => {
+        // ELIMINATE ALL PAST CHALLENGES FOR PAST YEARS
+        if (challenge.id > 999999) 
+        {
+            let idString = challenge.id.toString();
+            let currentYearString = new Date().getFullYear().toString();
+            if (!idString.startsWith(currentYearString))
+            {
+                return;
+            }
+        }
+
         if (playerChallengeIDs.includes(challenge.id))
         {
-            const challengeMaxLevelIndex = CHALLENGE_LEVELS.indexOf(challenge.maxLevel);
+            const challengeMaxLevelIndex = challenge.maxLevel;
             const currentChallengeData = challengeData.filter(data => {
                 return data.challengeId === challenge.id;
             })[0];
             const playerLevel = CHALLENGE_LEVELS.indexOf(currentChallengeData.level);
-            challenge.playerLevel = CHALLENGE_LEVELS[playerLevel];
+            challenge.playerLevel = playerLevel;
             if (playerLevel < challengeMaxLevelIndex)
             {
                 nonMaxedChallenges.push(challenge);
@@ -180,6 +254,10 @@ searchButton.addEventListener("click", async () => {
             nonMaxedChallenges.push(challenge);
         }
     });
+    beginDisplay();
 });
+
+// Challenge display
+const challengesBox = document.querySelector("#challenges-box");
 
 initialize();
