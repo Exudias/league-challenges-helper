@@ -176,7 +176,7 @@ function beginDisplay(amount)
         const tiersToGo = (sortedByTiersToGo[i].maxLevel - sortedByTiersToGo[i].playerLevel);
         const nextPercent = (sortedByPercentile[i].nextPercentile * 100).toFixed(1);
 
-        lowestTierEntry.innerText = sortedByLowestTier[i].name + " (TIER: " + tier + ")";
+        lowestTierEntry.innerText = sortedByLowestTier[i].name + " (" + tier + ")";
         tiersToGoEntry.innerText = sortedByTiersToGo[i].name + " (" + tiersToGo + ")";
         percentileEntry.innerText = sortedByPercentile[i].name + " (" + nextPercent + "% have next tier)";
 
