@@ -134,7 +134,7 @@ function makeRequest(method, url) {
     });
 }
 
-function beginDisplay()
+function beginDisplay(amount)
 {
     const sortedByLowestTier = [...nonMaxedChallenges].sort((a, b) => {
         return a.playerLevel - b.playerLevel;
@@ -161,6 +161,29 @@ function beginDisplay()
 
         return bTierPercentile - aTierPercentile;
     });
+
+    lowestTierColumn.innerHTML = "";
+    tiersToGoColumn.innerHTML = "";
+    highestPercentileColumn.innerHTML = "";
+
+    for (let i = 0; i < amount; i++)
+    {
+        lowestTierEntry = document.createElement("p");
+        tiersToGoEntry = document.createElement("p");
+        percentileEntry = document.createElement("p");
+
+        const tier = CHALLENGE_LEVELS[sortedByLowestTier[i].playerLevel] ?? "UNRANKED";
+        const tiersToGo = (sortedByTiersToGo[i].maxLevel - sortedByTiersToGo[i].playerLevel);
+        const nextPercent = (sortedByPercentile[i].nextPercentile * 100).toFixed(1);
+
+        lowestTierEntry.innerText = sortedByLowestTier[i].name + " (TIER: " + tier + ")";
+        tiersToGoEntry.innerText = sortedByTiersToGo[i].name + " (" + tiersToGo + ")";
+        percentileEntry.innerText = sortedByPercentile[i].name + " (" + nextPercent + "% have next tier)";
+
+        lowestTierColumn.appendChild(lowestTierEntry);
+        tiersToGoColumn.appendChild(tiersToGoEntry);
+        highestPercentileColumn.appendChild(percentileEntry);
+    }
 }
 
 function getChallengeTierPercentile(challengeId, challengeTierName)
@@ -234,6 +257,11 @@ searchButton.addEventListener("click", async () => {
                 return;
             }
         }
+        // ELIMINATE ALL CRYSTALS/CATEGORIES
+        else if (challenge.id < 10)
+        {
+            return;
+        }
 
         if (playerChallengeIDs.includes(challenge.id))
         {
@@ -254,7 +282,7 @@ searchButton.addEventListener("click", async () => {
             nonMaxedChallenges.push(challenge);
         }
     });
-    beginDisplay();
+    beginDisplay(5);
 });
 
 // Challenge display

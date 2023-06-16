@@ -204,7 +204,7 @@ body
     flex: 1;
 }
 
-.suggestion-column p {
+.suggestion-column > p {
     color: #CDFAFA;
 }
 
