@@ -188,7 +188,11 @@ function beginDisplay(amount)
 
 function getChallengeTierPercentile(challengeId, challengeTierName)
 {
-    return challengePercentiles[challengeId][challengeTierName];
+    if (challengePercentiles[challengeId])
+    {
+        return challengePercentiles[challengeId][challengeTierName];
+    }
+    else return 0;
 }
 
 function getNextTierNumber(challenge)
