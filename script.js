@@ -36,8 +36,11 @@ const CHALLENGE_PLAYER_DATA_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/pla
 async function updateChallengesInformation()
 {
     searchButton.disabled = true;
+    error.classList.remove("hidden");
+    error.innerText = "LOADING...";
     challengePercentiles = await getChallengePercentilesJSON();
     activeChallenges = getAllActiveChallengesFromConfig(await getChallengeConfigJSON());
+    error.classList.add("hidden");
     searchButton.disabled = false;
 }
 
@@ -385,5 +388,15 @@ const highestPercentileColumn = document.querySelector("#highest-percentile");
 
 // Error display
 const errorDiv = document.querySelector("#error");
+
+// Input
+playerNameInput.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      // Cancel the default action, if needed
+      event.preventDefault();
+      // Trigger the button element with a click
+      searchButton.click();
+    }
+  });
 
 initialize();
