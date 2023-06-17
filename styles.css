@@ -193,6 +193,12 @@ body
     font-size: 32px;
 }
 
+#player-name:focus {
+    outline: none;
+    border: 2px solid #F0E6D2;
+    background-color: #1E282D;
+}
+
 #results {
     width: 80vw;
 
@@ -211,7 +217,6 @@ body
 }
 
 #challenges-box {
-    margin-top: 24px;
     width: 100%;
     font-size: 30px;
     color: #A09B8C;
