@@ -24,37 +24,24 @@ const CHALLENGE_PLAYER_DATA_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/pla
 // Functions
 async function updateChallengesInformation()
 {
-    challengePercentiles = JSON.parse(await getChallengePercentiles());
-    challengeInfodatabaseLoaded = false;
     searchButton.disabled = true;
-    console.log("[INFO]: LOADING CHALLENGES CONFIG DATABASE...");
-    const CONFIG_FULL_ENDPOINT = "https://" + currentRegion + CHALLENGES_CONFIG_ENDPOINT;
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", CONFIG_FULL_ENDPOINT + "?api_key=" + API_KEY);
-    xhr.send();
-
-    xhr.onload = () => 
-    {
-        if (xhr.readyState == 4 && xhr.status == 200) 
-        {   
-            activeChallenges = getAllActiveChallengesFromConfig(JSON.parse(xhr.response));
-            challengeInfodatabaseLoaded = true;
-            searchButton.disabled = false;
-            console.log("[INFO]: CHALLENGES CONFIG DATABASE LOADED!");
-        } 
-        else 
-        {
-            alert(`Error: ${xhr.status}`);
-        }
-    }
+    challengePercentiles = await getChallengePercentilesJSON();
+    activeChallenges = getAllActiveChallengesFromConfig(await getChallengeConfigJSON());
+    searchButton.disabled = false;
 }
 
-async function getChallengePercentiles()
+async function getChallengeConfigJSON()
+{
+    const CONFIG_FULL_ENDPOINT = "https://" + currentRegion + CHALLENGES_CONFIG_ENDPOINT;
+
+    return JSON.parse(await makeRequest("GET", CONFIG_FULL_ENDPOINT + "?api_key=" + API_KEY));
+}
+
+async function getChallengePercentilesJSON()
 {
     const CHALLENGE_PERCENTILES_FULL_ENDPOINT = "https://" + currentRegion + CHALLENGE_PERCENTILES_ENDPOINT;
 
-    return await makeRequest("GET", CHALLENGE_PERCENTILES_FULL_ENDPOINT + "?api_key=" + API_KEY);
+    return JSON.parse(await makeRequest("GET", CHALLENGE_PERCENTILES_FULL_ENDPOINT + "?api_key=" + API_KEY));
 }
 
 async function getChallengeDataFromName(name)
@@ -63,17 +50,17 @@ async function getChallengeDataFromName(name)
 
     const summoner = await makeRequest("GET", SUMMONER_BY_NAME_FULL_ENDPOINT + "?api_key=" + API_KEY);
 
-    return await getChallengeDataFromPUUID(JSON.parse(summoner).puuid);
+    return await getChallengeDataJSONFromPUUID(JSON.parse(summoner).puuid);
 }
 
-async function getChallengeDataFromPUUID(puuid)
+async function getChallengeDataJSONFromPUUID(puuid)
 {
     const CHALLENGE_PLAYER_DATA_FULL_ENDPOINT = "https://" + currentRegion + CHALLENGE_PLAYER_DATA_ENDPOINT + puuid;
 
     return JSON.parse(await makeRequest("GET", CHALLENGE_PLAYER_DATA_FULL_ENDPOINT + "?api_key=" + API_KEY));
 }
 
-function getMaxThreshold(challengeThresholds)
+function getMaxThresholdNumeric(challengeThresholds)
 {
     let current_max;
     CHALLENGE_LEVELS.forEach(level => {
@@ -96,7 +83,7 @@ function getAllActiveChallengesFromConfig(config)
                 name: challenge.localizedNames.en_GB.name,
                 id: challenge.id,
                 thresholds: challenge.thresholds,
-                maxLevel: getMaxThreshold(challenge.thresholds),
+                maxLevel: getMaxThresholdNumeric(challenge.thresholds),
             };
             result.push(activeChallengeObject);
         }
@@ -162,9 +149,7 @@ function beginDisplay(amount)
         return bTierPercentile - aTierPercentile;
     });
 
-    lowestTierColumn.innerHTML = "";
-    tiersToGoColumn.innerHTML = "";
-    highestPercentileColumn.innerHTML = "";
+    clearSuggestions();
 
     for (let i = 0; i < amount; i++)
     {
@@ -184,6 +169,13 @@ function beginDisplay(amount)
         tiersToGoColumn.appendChild(tiersToGoEntry);
         highestPercentileColumn.appendChild(percentileEntry);
     }
+}
+
+function clearSuggestions()
+{
+    lowestTierColumn.innerHTML = "";
+    tiersToGoColumn.innerHTML = "";
+    highestPercentileColumn.innerHTML = "";
 }
 
 function getChallengeTierPercentile(challengeId, challengeTierName)
@@ -219,7 +211,6 @@ function getNextTierNumber(challenge)
 let activeChallenges;
 let challengePercentiles;
 let currentPlayer;
-let challengeInfodatabaseLoaded = false;
 
 // Region selection
 const regionSelector = document.querySelector("#region");
@@ -235,6 +226,7 @@ const searchButton = document.querySelector("#search-button");
 const playerNameInput = document.querySelector("#player-name");
 let nonMaxedChallenges = [];
 searchButton.addEventListener("click", async () => {
+    error.classList.add("hidden");
     currentPlayer = playerNameInput.value;
     let playerData;
     try
@@ -243,15 +235,16 @@ searchButton.addEventListener("click", async () => {
     }
     catch
     {
-        alert("Player not found!");
-        // Perhaps some UI feedback that's not an alert...
+        error.innerText = "PLAYER NOT FOUND";
+        clearSuggestions();
+        error.classList.remove("hidden");
         return;
     }
     const challengeData = playerData.challenges;
     const playerChallengeIDs = challengeData.map(challenge => challenge.challengeId);
     nonMaxedChallenges = [];
     activeChallenges.forEach(challenge => {
-        // ELIMINATE ALL PAST CHALLENGES FOR PAST YEARS
+        // Eliminate all yearly challenges for past years
         if (challenge.id > 999999) 
         {
             let idString = challenge.id.toString();
@@ -261,7 +254,7 @@ searchButton.addEventListener("click", async () => {
                 return;
             }
         }
-        // ELIMINATE ALL CRYSTALS/CATEGORIES
+        // Eliminate Crystal and Categories as challenges
         else if (challenge.id < 10)
         {
             return;
@@ -294,5 +287,8 @@ const challengesBox = document.querySelector("#challenges-box");
 const lowestTierColumn = document.querySelector("#lowest-tier");
 const tiersToGoColumn = document.querySelector("#tiers-to-go");
 const highestPercentileColumn = document.querySelector("#highest-percentile");
+
+// Error display
+const errorDiv = document.querySelector("#error");
 
 initialize();
