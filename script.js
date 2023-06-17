@@ -251,20 +251,31 @@ function beginDisplay(amount)
     for (let i = 0; i < amount; i++)
     {
         closestLevelupEntry = document.createElement("p");
-        pointIncreaseEntry = document.createElement("p");
-        percentileEntry = document.createElement("p");
+        closestLevelupDesc = document.createElement("p");
 
-        const tier = (sortedByClosestLevelup[i].progressToNextTier * 100).toFixed(1);
-        const tiersToGo = sortedByPointIncrease[i].nextPoints;
+        pointIncreaseEntry = document.createElement("p");
+        pointIncreaseDesc = document.createElement("p");
+
+        percentileEntry = document.createElement("p");
+        percentileDesc = document.createElement("p");
+
+        const progress = (sortedByClosestLevelup[i].progressToNextTier * 100).toFixed(1);
+        const pointsToGet = sortedByPointIncrease[i].nextPoints;
         const nextPercent = (sortedByPercentile[i].nextPercentile * 100).toFixed(1);
 
-        closestLevelupEntry.innerText = sortedByClosestLevelup[i].name + " (" + tier + "%)";
-        pointIncreaseEntry.innerText = sortedByPointIncrease[i].name + " (" + tiersToGo + ")";
-        percentileEntry.innerText = sortedByPercentile[i].name + " (" + nextPercent + "% have next tier)";
+        closestLevelupEntry.innerText = sortedByClosestLevelup[i].name;
+        closestLevelupDesc.innerText = "Progress: " + progress + "%";
+        pointIncreaseEntry.innerText = sortedByPointIncrease[i].name;
+        pointIncreaseDesc.innerText =  "You will get " + pointsToGet + " points for leveling up.";
+        percentileEntry.innerText = sortedByPercentile[i].name;
+        percentileDesc.innerText = nextPercent + "% of players have the next tier.";
 
         closestLevelupColumn.appendChild(closestLevelupEntry);
+        closestLevelupEntry.appendChild(closestLevelupDesc);
         pointIncreaseColumn.appendChild(pointIncreaseEntry);
+        pointIncreaseEntry.appendChild(pointIncreaseDesc);
         highestPercentileColumn.appendChild(percentileEntry);
+        percentileEntry.appendChild(percentileDesc);
     }
 }
 
