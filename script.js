@@ -1,5 +1,5 @@
 // Constants
-const API_KEY = "RGAPI-aa4f17eb-52f6-42e0-83bc-6ef8fc0d0776";
+const API_KEY = "RGAPI-126439f7-1dfa-4623-b59a-aa08c640e1d8";
 
 const CHALLENGE_LEVELS = 
 [
