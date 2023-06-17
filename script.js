@@ -183,9 +183,18 @@ function calculateProgressToNextLevel()
             return nonMaxedObj.id === thresholdObj.id;
         })[0];
         if (thresholdObject !== undefined)
-        nonMaxedObj.progressToNextTier = thresholdObject.progressToNextTier;
+        {
+            nonMaxedObj.progressToNextTier = thresholdObject.progressToNextTier;
+            if (isNaN(nonMaxedObj.progressToNextTier))
+            {
+                nonMaxedObj.progressToNextTier = 0;
+            }
+        }
+        else
+        {
+            nonMaxedObj.progressToNextTier = 0;
+        }
     });
-    console.log(nonMaxedChallenges);
 }
 
 function getLowerAndUpperThresholdFromThresholdObject(object)
@@ -234,10 +243,11 @@ function beginDisplay(amount)
     });
     calculateProgressToNextLevel();
     const sortedByClosestLevelup = [...nonMaxedChallenges].sort((a, b) => {
-        const aProgress = a.progressToNextTier ?? -1;
-        const bProgress = b.progressToNextTier ?? -1;
+        const aProgress = a.progressToNextTier;
+        const bProgress = b.progressToNextTier;
         return bProgress - aProgress;
     });
+    console.log(sortedByClosestLevelup);
     const sortedByPointIncrease = [...nonMaxedChallenges].sort((a, b) => {
         let aPoints = getPointsFromNextChallengeLevel(a);
         let bPoints = getPointsFromNextChallengeLevel(b);
@@ -377,7 +387,7 @@ searchButton.addEventListener("click", async () => {
             })[0];
             const playerLevel = CHALLENGE_LEVELS.indexOf(currentChallengeData.level);
             challenge.playerLevel = playerLevel;
-            if (playerLevel < challengeMaxLevelIndex)
+            if (playerLevel < challengeMaxLevelIndex && playerLevel < CHALLENGE_LEVELS.indexOf("MASTER"))
             {
                 nonMaxedChallenges.push(challenge);
             }
@@ -416,6 +426,6 @@ playerNameInput.addEventListener("keypress", function(event) {
       // Trigger the button element with a click
       searchButton.click();
     }
-  });
+});
 
 initialize();
