@@ -309,6 +309,48 @@ body
     transition: 0.25s;
 }
 
+#slider-box {
+    width: 80%;
+    font-size: 2vw;
+    text-align: center;
+}
+
+#display-amount-counter {
+    margin: 0;
+}
+
+#display-amount-selector {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 24px; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+}
+
+#display-amount-selector:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+  }
+
+#display-amount-selector::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 3vw; /* Set a specific slider handle width */
+    height: 24px; /* Slider handle height */
+    background: #C8AA6E;
+    cursor: pointer; /* Cursor on hover */
+}
+  
+#display-amount-selector::-moz-range-thumb {
+    width: 3vw; /* Set a specific slider handle width */
+    height: 24px; /* Slider handle height */
+    background: #C8AA6E;
+    cursor: pointer; /* Cursor on hover */
+}
+
 #search-button {
     width: 360px;
     height: 64px;

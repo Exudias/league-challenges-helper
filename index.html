@@ -39,6 +39,11 @@
                 <input type="text" name="playerName" id="player-name" value="Exudias" autofocus 
                 onfocus="let tempValue = this.value; this.value = ''; this.value = tempValue" >
             </div>
+            <div id="slider-box">
+                <label for="display-amount-selector">Recommendation count: &nbsp;</label>
+                <input type="range" min="5" max="95" value="5" step="5" id="display-amount-selector">
+                <p id="display-amount-counter">5</p>
+            </div>
         </div>
         <div id="error" class="hidden">
             PLAYER NOT FOUND!

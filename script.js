@@ -388,7 +388,7 @@ searchButton.addEventListener("click", async () => {
             nonMaxedChallenges.push(challenge);
         }
     });
-    beginDisplay(5);
+    beginDisplay(amountToDisplay);
 });
 
 // Challenge display
@@ -396,6 +396,14 @@ const challengesBox = document.querySelector("#challenges-box");
 const closestLevelupColumn = document.querySelector("#closest-level-up");
 const pointIncreaseColumn = document.querySelector("#point-increase");
 const highestPercentileColumn = document.querySelector("#highest-percentile");
+
+const displayAmountSlider = document.querySelector("#display-amount-selector");
+const displayAmountCounter = document.querySelector("#display-amount-counter");
+let amountToDisplay = displayAmountSlider.value;
+displayAmountSlider.addEventListener("change", () => {
+    displayAmountCounter.innerText = displayAmountSlider.value;
+    amountToDisplay = displayAmountSlider.value;
+});
 
 // Error display
 const errorDiv = document.querySelector("#error");
