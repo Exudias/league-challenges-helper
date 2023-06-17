@@ -1,6 +1,4 @@
-// TODO: Implement async/await functionality
-
-// Important constants
+// Constants
 const API_KEY = "RGAPI-aa4f17eb-52f6-42e0-83bc-6ef8fc0d0776";
 
 const CHALLENGE_LEVELS = 
@@ -15,6 +13,19 @@ const CHALLENGE_LEVELS =
     "GRANDMASTER",
     "CHALLENGER"
 ];
+
+const CHALLENGE_POINTS =
+{
+  IRON: 5,
+  BRONZE: 10,
+  SILVER: 15,
+  GOLD: 25,
+  PLATINUM: 40,
+  DIAMOND: 60,
+  MASTER: 100,
+  GRANDMASTER: 100,
+  CHALLENGER: 100
+};
 
 const CHALLENGES_CONFIG_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/config";
 const CHALLENGE_PERCENTILES_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/percentiles";
@@ -58,6 +69,15 @@ async function getChallengeDataJSONFromPUUID(puuid)
     const CHALLENGE_PLAYER_DATA_FULL_ENDPOINT = "https://" + currentRegion + CHALLENGE_PLAYER_DATA_ENDPOINT + puuid;
 
     return JSON.parse(await makeRequest("GET", CHALLENGE_PLAYER_DATA_FULL_ENDPOINT + "?api_key=" + API_KEY));
+}
+
+function getPointsFromNextChallengeLevel(challenge)
+{
+    let currentLevel = challenge.playerLevel;
+    let nextLevel = challenge.nextLevel;
+    let currentPoints = currentLevel === -1 ? 0 : CHALLENGE_POINTS[CHALLENGE_LEVELS[currentLevel]];
+    let nextPoints = nextLevel === -1 ? 0 : CHALLENGE_POINTS[CHALLENGE_LEVELS[nextLevel]]
+    return nextPoints - currentPoints;
 }
 
 function getMaxThresholdNumeric(challengeThresholds)
@@ -121,16 +141,77 @@ function makeRequest(method, url) {
     });
 }
 
+function calculateProgressToNextLevel()
+{
+    // Filter out challenges you haven't even started
+    const progressedActives = [];
+    activeChallenges.forEach(chall => {
+        const id = chall.id;
+        const dataFromId = challengeData.filter(data => {
+            return data.challengeId === id;
+        })[0];
+        if (dataFromId !== undefined)
+        {
+            progressedActives.push(chall);
+        }
+    });
+
+    // Create a useful object for calculations
+    const thresholdObjects = [...progressedActives].map(chall => {
+        return { 
+            id: chall.id, 
+            thresholds: chall.thresholds, 
+            playerScore: challengeData.filter(data => {
+                return data.challengeId === chall.id;
+            })[0].value
+        }});
+
+    filteredThresholds = [];
+
+    thresholdObjects.forEach(object => {
+        const thresholds = object.thresholds;
+        const lowerUpper = getLowerAndUpperThresholdFromThresholdObject(object);
+        const percentage = (lowerUpper.playerScore - lowerUpper.lower) / (lowerUpper.upper - lowerUpper.lower);
+        object.progressToNextTier = percentage;
+    });
+
+    nonMaxedChallenges.forEach(nonMaxedObj => {
+        const thresholdObject = thresholdObjects.filter(thresholdObj => {
+            return nonMaxedObj.id === thresholdObj.id;
+        })[0];
+        if (thresholdObject !== undefined)
+        nonMaxedObj.progressToNextTier = thresholdObject.progressToNextTier;
+    });
+    console.log(nonMaxedChallenges);
+}
+
+function getLowerAndUpperThresholdFromThresholdObject(object)
+{
+    const playerScore = object.playerScore;
+    let lower;
+    let upper;
+    let lastRequirement;
+    for (let i = 0; i < CHALLENGE_LEVELS.length; i++)
+    {
+        const thresholdRequirement = object.thresholds[CHALLENGE_LEVELS[i]];
+        if (thresholdRequirement === undefined) continue;
+        if (lower === undefined && playerScore >= thresholdRequirement)
+        {
+            lower = thresholdRequirement;
+        }
+        if (upper === undefined && playerScore < thresholdRequirement)
+        {
+            upper = thresholdRequirement;
+            lower = lastRequirement;
+            break;
+        }
+        lastRequirement = thresholdRequirement;
+    }
+    return {lower, upper, playerScore};
+} 
+
 function beginDisplay(amount)
 {
-    const sortedByLowestTier = [...nonMaxedChallenges].sort((a, b) => {
-        return a.playerLevel - b.playerLevel;
-    });
-    const sortedByTiersToGo = [...nonMaxedChallenges].sort((a, b) => {
-        let aTiers = a.maxLevel - a.playerLevel;
-        let bTiers = b.maxLevel - b.playerLevel;
-        return bTiers - aTiers;
-    });
     const sortedByPercentile = [...nonMaxedChallenges].filter(chall => {
         let nextLevel = getNextTierNumber(chall);
         chall.nextLevel = nextLevel;
@@ -148,33 +229,46 @@ function beginDisplay(amount)
 
         return bTierPercentile - aTierPercentile;
     });
+    calculateProgressToNextLevel();
+    const sortedByClosestLevelup = [...nonMaxedChallenges].sort((a, b) => {
+        const aProgress = a.progressToNextTier ?? -1;
+        const bProgress = b.progressToNextTier ?? -1;
+        return bProgress - aProgress;
+    });
+    const sortedByPointIncrease = [...nonMaxedChallenges].sort((a, b) => {
+        let aPoints = getPointsFromNextChallengeLevel(a);
+        let bPoints = getPointsFromNextChallengeLevel(b);
+        a.nextPoints = aPoints;
+        b.nextPoints = bPoints;
+        return bPoints - aPoints;
+    });
 
     clearSuggestions();
 
     for (let i = 0; i < amount; i++)
     {
-        lowestTierEntry = document.createElement("p");
-        tiersToGoEntry = document.createElement("p");
+        closestLevelupEntry = document.createElement("p");
+        pointIncreaseEntry = document.createElement("p");
         percentileEntry = document.createElement("p");
 
-        const tier = CHALLENGE_LEVELS[sortedByLowestTier[i].playerLevel] ?? "UNRANKED";
-        const tiersToGo = (sortedByTiersToGo[i].maxLevel - sortedByTiersToGo[i].playerLevel);
+        const tier = (sortedByClosestLevelup[i].progressToNextTier * 100).toFixed(1);
+        const tiersToGo = sortedByPointIncrease[i].nextPoints;
         const nextPercent = (sortedByPercentile[i].nextPercentile * 100).toFixed(1);
 
-        lowestTierEntry.innerText = sortedByLowestTier[i].name + " (" + tier + ")";
-        tiersToGoEntry.innerText = sortedByTiersToGo[i].name + " (" + tiersToGo + ")";
+        closestLevelupEntry.innerText = sortedByClosestLevelup[i].name + " (" + tier + "%)";
+        pointIncreaseEntry.innerText = sortedByPointIncrease[i].name + " (" + tiersToGo + ")";
         percentileEntry.innerText = sortedByPercentile[i].name + " (" + nextPercent + "% have next tier)";
 
-        lowestTierColumn.appendChild(lowestTierEntry);
-        tiersToGoColumn.appendChild(tiersToGoEntry);
+        closestLevelupColumn.appendChild(closestLevelupEntry);
+        pointIncreaseColumn.appendChild(pointIncreaseEntry);
         highestPercentileColumn.appendChild(percentileEntry);
     }
 }
 
 function clearSuggestions()
 {
-    lowestTierColumn.innerHTML = "";
-    tiersToGoColumn.innerHTML = "";
+    closestLevelupColumn.innerHTML = "";
+    pointIncreaseColumn.innerHTML = "";
     highestPercentileColumn.innerHTML = "";
 }
 
@@ -225,6 +319,7 @@ const resultsBox = document.querySelector("#results");
 const searchButton = document.querySelector("#search-button");
 const playerNameInput = document.querySelector("#player-name");
 let nonMaxedChallenges = [];
+let challengeData;
 searchButton.addEventListener("click", async () => {
     error.classList.add("hidden");
     currentPlayer = playerNameInput.value;
@@ -240,7 +335,7 @@ searchButton.addEventListener("click", async () => {
         error.classList.remove("hidden");
         return;
     }
-    const challengeData = playerData.challenges;
+    challengeData = playerData.challenges;
     const playerChallengeIDs = challengeData.map(challenge => challenge.challengeId);
     nonMaxedChallenges = [];
     activeChallenges.forEach(challenge => {
@@ -284,8 +379,8 @@ searchButton.addEventListener("click", async () => {
 
 // Challenge display
 const challengesBox = document.querySelector("#challenges-box");
-const lowestTierColumn = document.querySelector("#lowest-tier");
-const tiersToGoColumn = document.querySelector("#tiers-to-go");
+const closestLevelupColumn = document.querySelector("#closest-level-up");
+const pointIncreaseColumn = document.querySelector("#point-increase");
 const highestPercentileColumn = document.querySelector("#highest-percentile");
 
 // Error display
