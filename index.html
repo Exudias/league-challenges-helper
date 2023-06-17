@@ -12,31 +12,33 @@
         <div id="title-box">
             LoL Challenges Helper
         </div>
-        <div id="region-select-box">
-            <label for="region">Select a region: &nbsp;</label>
-            <select name="region" id="region">
-                <option value="euw1" selected>EUW</option>
-                <option value="na1">NA</option>
-                <option value="eun1">EUNE</option>
-                <option value="kr">KR</option>
-                <option value="br1">BR</option>
-                <option value="jp1">JP</option>
-                <option value="ru">RU</option>
-                <option value="oc1">OCE</option>
-                <option value="tr1">TR</option>
-                <option value="la1">LAN</option>
-                <option value="la2">LAS</option>
-                <option value="ph2">PH</option>
-                <option value="sg2">SG</option>
-                <option value="th2">TH</option>
-                <option value="tw2">TW</option>
-                <option value="vn2">VN</option>
-            </select>
-        </div>
-        <div id="player-input-box">
-            <label for="player-name">Player name: &nbsp;</label>
-            <input type="text" name="playerName" id="player-name" value="Exudias" autofocus 
-            onfocus="let tempValue = this.value; this.value = ''; this.value = tempValue" >
+        <div id="input-container">
+            <div id="region-select-box">
+                <label for="region">Select a region: &nbsp;</label>
+                <select name="region" id="region">
+                    <option value="euw1" selected>EUW</option>
+                    <option value="na1">NA</option>
+                    <option value="eun1">EUNE</option>
+                    <option value="kr">KR</option>
+                    <option value="br1">BR</option>
+                    <option value="jp1">JP</option>
+                    <option value="ru">RU</option>
+                    <option value="oc1">OCE</option>
+                    <option value="tr1">TR</option>
+                    <option value="la1">LAN</option>
+                    <option value="la2">LAS</option>
+                    <option value="ph2">PH</option>
+                    <option value="sg2">SG</option>
+                    <option value="th2">TH</option>
+                    <option value="tw2">TW</option>
+                    <option value="vn2">VN</option>
+                </select>
+            </div>
+            <div id="player-input-box">
+                <label for="player-name">Player name: &nbsp;</label>
+                <input type="text" name="playerName" id="player-name" value="Exudias" autofocus 
+                onfocus="let tempValue = this.value; this.value = ''; this.value = tempValue" >
+            </div>
         </div>
         <div id="error" class="hidden">
             PLAYER NOT FOUND!

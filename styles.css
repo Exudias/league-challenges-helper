@@ -151,16 +151,28 @@ body
     font-size: 48px;
 }
 
+#input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 48px;
+    border: 4px solid #C89B3C;
+    background-color: #1E2328;
+    padding: 16px 0px;
+    gap: 12px;
+    width: 50vw;
+}
+
 #region-select-box {
     box-sizing: border-box;
-    font-size: 32px;
+    font-size: 2vw;
     line-height: 32px;
     font-weight: 500;
 }
 
 #region {
     box-sizing: border-box;
-    width: 160px;
+    width: 96px;
     height: 32px;
 
     background-color: #010A13;
@@ -172,16 +184,20 @@ body
     font-size: 24px;
 }
 
+#region:focus {
+    outline: none;
+}
+
 #player-input-box {
     box-sizing: border-box;
-    font-size: 32px;
+    font-size: 2vw;
     line-height: 32px;
     font-weight: 500;
 }
 
 #player-name {
     box-sizing: border-box;
-    width: 240px;
+    width: 15vw;
     height: 32px;
     
     background-color: #010A13;
@@ -253,7 +269,7 @@ body
     box-sizing: border-box;
     color: white;
     background-color: #0397AB;
-    border: 8px solid #0AC8B9;
+    border: 0.5vw solid #0AC8B9;
     border-radius: 8px;
     font-size: 1.5vw;
     height: 5vw;
