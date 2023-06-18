@@ -180,6 +180,7 @@ function displayInColumns(data, amountToDisplay)
 
         easiestDesc.innerText = `${easiestPercent}% of players have the next tier.`;
         closestDesc.innerText = `Progress: ${closestPercent}%`;
+        //closestDesc.innerText = sortedByClosest[i].description;
         increaseDesc.innerText = `You will get ${increasePoints} point for leveling up.`;
 
         easiestColumn.appendChild(easiestEntry);
