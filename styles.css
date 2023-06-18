@@ -181,7 +181,7 @@ body
     font-weight: 500;
 }
 
-#region {
+#region-dropdown {
     box-sizing: border-box;
     width: 96px;
     height: 32px;
@@ -195,7 +195,7 @@ body
     font-size: 24px;
 }
 
-#region:focus {
+#region-dropdown:focus {
     outline: none;
 }
 
@@ -206,7 +206,7 @@ body
     font-weight: 500;
 }
 
-#player-name {
+#player-input {
     box-sizing: border-box;
     width: 15vw;
     height: 32px;
@@ -220,7 +220,7 @@ body
     font-size: 32px;
 }
 
-#player-name:focus {
+#player-input:focus {
     outline: none;
     border: 2px solid #F0E6D2;
     background-color: #1E282D;
@@ -327,11 +327,11 @@ body
     text-align: center;
 }
 
-#display-amount-counter {
+#displayamount-counter {
     margin: 0;
 }
 
-#display-amount-selector {
+#displayamount-slider {
     box-sizing: border-box;
     -webkit-appearance: none;  /* Override default CSS styles */
     appearance: none;
@@ -345,11 +345,11 @@ body
     transition: opacity .2s;
 }
 
-#display-amount-selector:hover {
+#displayamount-slider:hover {
     opacity: 1; /* Fully shown on mouse-over */
 }
 
-#display-amount-selector::-webkit-slider-thumb {
+#displayamount-slider::-webkit-slider-thumb {
     -webkit-appearance: none; /* Override default look */
     appearance: none;
     width: 3vw; /* Set a specific slider handle width */
@@ -358,7 +358,7 @@ body
     cursor: pointer; /* Cursor on hover */
 }
   
-#display-amount-selector::-moz-range-thumb {
+#displayamount-slider::-moz-range-thumb {
     width: 3vw; /* Set a specific slider handle width */
     height: 24px; /* Slider handle height */
     background: #C8AA6E;
@@ -403,7 +403,7 @@ body
     color: #0A323C;
 }
 
-#error
+#error-display
 {
     background-color: #463714;
 
