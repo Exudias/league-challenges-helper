@@ -118,6 +118,14 @@ h1, h2, h3, h4, h5 {
     text-transform: uppercase;
 }
 
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
 body {
     margin: 0;
     background: rgb(9,20,40);
@@ -140,40 +148,44 @@ body {
 }
 
 #title-box {
-    box-sizing: border-box;
     position: fixed;
     top: 0;
     z-index: 9999;
+
     font-size: 48px;
+    text-align: center;
+
     width: 100%;
     height: 64px;
-    text-align: center;
+    
     background-color: #463714;
     border-bottom: 4px solid #C89B3C;
 }
 
 #input-container {
+    width: 50vw;
+
     margin-top: 96px;
+
     display: flex;
     flex-direction: column;
     align-items: center;
+
     border-radius: 48px;
     border: 4px solid #C89B3C;
     background-color: #1E2328;
+
     padding: 16px 0px;
     gap: 12px;
-    width: 50vw;
 }
 
 #region-select-box {
-    box-sizing: border-box;
     font-size: 2vw;
     line-height: 32px;
     font-weight: 500;
 }
 
 #region-dropdown {
-    box-sizing: border-box;
     width: 96px;
     height: 32px;
 
@@ -191,14 +203,12 @@ body {
 }
 
 #player-input-box {
-    box-sizing: border-box;
     font-size: 2vw;
     line-height: 32px;
     font-weight: 500;
 }
 
 #player-input {
-    box-sizing: border-box;
     width: 15vw;
     height: 32px;
     
@@ -254,6 +264,7 @@ body {
 .suggestion-column > p {
     color: #F0E6D2;
     font-size: 2.5vw;
+
     width: 100%;
     background-color: #C8AA6E;
     padding: 16px 0;
@@ -261,22 +272,27 @@ body {
 
 .results-container {
     width: 80%;
+
     display: flex;
     flex-direction: column;
     gap: 8px;
+
     padding-bottom: 12px;
 }
 
 .results-container > p {
     margin: 0;
-    box-sizing: border-box;
+
     color: white;
+    font-size: 1.5vw;
+    line-height: 1.5vw;
+
     background-color: #0397AB;
     border: 0.5vw solid #0AC8B9;
     border-radius: 8px;
-    font-size: 1.5vw;
+    
     height: 5vw;
-    line-height: 1.5vw;
+    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -284,32 +300,38 @@ body {
 }
 
 .results-container > p > p {
-    box-sizing: border-box;
     margin: 0;
+
     color: white;
+    font-size: 1.5vw;
+    line-height: 1.5vw;
+
     background-color: #0397AB;
     border: 0.5vw solid white;
     border-radius: 8px;
-    font-size: 1.5vw;
-    height: 5.25vw;
+    
+    height: 9.5vw;
     width: 105%;
-    line-height: 1.5vw;
+    
     display: flex;
     align-items: center;
     justify-content: center;
+
     position: absolute;
     left: -0.5vw;
     right: 0;
     top: 50%;
+
     opacity: 0;
     transform: translateY(-45%);
     transition: 0.25s;
 }
 
 .results-container > p:hover > p {
+    z-index: 9999;
+    height: 10.5vw;
     opacity: 100;
     transform: translateY(-50%);
-    transition: 0.25s;
 }
 
 #slider-box {
@@ -323,7 +345,6 @@ body {
 }
 
 #displayamount-slider {
-    box-sizing: border-box;
     -webkit-appearance: none;  /* Override default CSS styles */
     appearance: none;
     width: 100%; /* Full-width */
@@ -408,7 +429,6 @@ body {
 }
 
 #footer {
-    box-sizing: border-box;
     position: fixed;
     bottom: 0;
     z-index: 9999;

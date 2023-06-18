@@ -178,10 +178,13 @@ function displayInColumns(data, amountToDisplay)
         const closestPercent = (sortedByClosest[i].percentToNextLevel * 100).toFixed(1);
         const increasePoints = sortedByBiggestIncrease[i].pointsFromLevelUp;
 
-        easiestDesc.innerText = `${easiestPercent}% of players have the next tier.`;
-        closestDesc.innerText = `Progress: ${closestPercent}%`;
-        //closestDesc.innerText = sortedByClosest[i].description;
-        increaseDesc.innerText = `You will get ${increasePoints} point for leveling up.`;
+        let easiestText = `${easiestPercent}% of players have the next tier.\n\n${sortedByClosest[i].description}`;
+        let closestText = `Progress: ${closestPercent}%\n\n${sortedByClosest[i].description}`;
+        let increaseText = `You will get ${increasePoints} points for leveling up.\n\n${sortedByClosest[i].description}`;
+
+        easiestDesc.innerText = easiestText.replace(/<\/?[^>]+(>|$)/g, "");
+        closestDesc.innerText = closestText.replace(/<\/?[^>]+(>|$)/g, "");
+        increaseDesc.innerText = increaseText.replace(/<\/?[^>]+(>|$)/g, "");
 
         easiestColumn.appendChild(easiestEntry);
         easiestEntry.appendChild(easiestDesc);
