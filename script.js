@@ -50,9 +50,13 @@ async function initialize()
     loadChallengeGlobals(regionInformation);
 }
 
+const ERROR_PLAYER_NOT_FOUND = "PLAYER NOT FOUND";
+
 async function search()
 {
-    // TODO: Clear suggestions
+    errorDisplay.classList.add("hidden");
+    errorDisplay.innerText = ERROR_PLAYER_NOT_FOUND;
+    clearColumns();
     const searchedPlayer = playerNameInput.value;
     // Get player's data
     let playerData;
@@ -63,6 +67,7 @@ async function search()
     catch
     {
         // TODO: Display error
+        errorDisplay.classList.remove("hidden");
         return;
     }
     // Sample only necessary data
@@ -81,10 +86,6 @@ async function search()
         const challInformation = loadedChallengeInformation[key];
         const playerChallData = objectifiedData[key];
         const percentileData = loadedChallengePercentiles[key];
-        // console.log(challInformation);
-        // console.log(playerChallData);
-        // console.log(percentileData);
-        // console.log("---");
 
         // Initialize object
         const fullDataItem = {};
@@ -123,7 +124,7 @@ async function search()
         const nextLevelPoints = POINTS_FROM_LEVEL_ID[fullDataItem.nextLevel];
         fullDataItem.pointsFromLevelUp = nextLevelPoints - playerPoints;
         // Percent to next level    
-        const scoreForCurrentLevel = fullDataItem.thresholds[fullDataItem.playerLevel];
+        const scoreForCurrentLevel = fullDataItem.thresholds[fullDataItem.playerLevel] ?? 0;
         const scoreForNextLevel = fullDataItem.thresholds[fullDataItem.nextLevel];
         const playerScore = fullDataItem.playerScore;
         fullDataItem.percentToNextLevel = (playerScore - scoreForCurrentLevel) / (scoreForNextLevel - scoreForCurrentLevel);
@@ -134,7 +135,62 @@ async function search()
         playerFullData.push(fullDataItem);
     });
 
-    console.log(playerFullData);
+    displayInColumns(playerFullData, 5);
+}
+
+function displayInColumns(data, amountToDisplay)
+{
+    const sortedByEasiest = [...data].sort((a, b) => {
+        return b.nextLevelPercentile - a.nextLevelPercentile;
+    });
+
+    const sortedByClosest = [...data].sort((a, b) => {
+        return b.percentToNextLevel - a.percentToNextLevel;
+    });
+
+    const sortedByBiggestIncrease = [...data].sort((a, b) => {
+        return b.pointsFromLevelUp - a.pointsFromLevelUp;
+    });
+
+    for (let i = 0; i < amountToDisplay; i++)
+    {
+        easiestEntry = document.createElement("p");
+        easiestDesc = document.createElement("p");
+
+        closestEntry = document.createElement("p");
+        closestDesc = document.createElement("p");
+
+        increaseEntry = document.createElement("p");
+        increaseDesc = document.createElement("p");
+
+        easiestEntry.innerText = sortedByEasiest[i].name;
+        closestEntry.innerText = sortedByClosest[i].name;
+        increaseEntry.innerText = sortedByBiggestIncrease[i].name;
+
+        const easiestPercent = (sortedByEasiest[i].nextLevelPercentile * 100).toFixed(1);
+        const closestPercent = (sortedByClosest[i].percentToNextLevel * 100).toFixed(1);
+        const increasePoints = sortedByBiggestIncrease[i].pointsFromLevelUp;
+
+        easiestDesc.innerText = `${easiestPercent}% of players have the next tier.`;
+        closestDesc.innerText = `Progress: ${closestPercent}%`;
+        increaseDesc.innerText = `You will get ${increasePoints} point for leveling up.`;
+
+        easiestColumn.appendChild(easiestEntry);
+        easiestEntry.appendChild(easiestDesc);
+
+        closestColumn.appendChild(closestEntry);
+        closestEntry.appendChild(closestDesc);
+
+        biggestIncreaseColumn.appendChild(increaseEntry);
+        increaseEntry.appendChild(increaseDesc);
+    }
+}
+
+function clearColumns()
+{
+    closestColumn.innerHTML = "";
+    biggestIncreaseColumn.innerHTML = "";
+    easiestColumn.innerHTML = "";
 }
 
 function loadChallengeGlobals(regionInformation)
@@ -182,7 +238,6 @@ function loadChallengeGlobals(regionInformation)
         numerifiedPercentiles[entryId] = numerifiedPercentileForEntry;
     });
     loadedChallengePercentiles = numerifiedPercentiles;
-    console.log("Database loaded!");
 }
 
 async function getRegionInformation(region)
@@ -195,8 +250,6 @@ async function getRegionInformation(region)
 
     searchButton.innerText = BUTTON_SEARCH_TEXT;
     searchButton.disabled = false;
-
-    console.log("Getting info from " + region);
 
     return {config: challengeConfig, percentiles: challengePercentiles};
 }
@@ -280,9 +333,9 @@ const searchButton = document.querySelector("#search-button");
 
 /// Information display
 // Recommendation columns
-const closestLevelupColumn = document.querySelector("#closest-level-up");
-const pointIncreaseColumn = document.querySelector("#point-increase");
-const highestPercentileColumn = document.querySelector("#highest-percentile");
+const closestColumn = document.querySelector("#closest-column");
+const biggestIncreaseColumn = document.querySelector("#biggestincrease-column");
+const easiestColumn = document.querySelector("#easiest-column");
 // Error display
 const errorDisplay = document.querySelector("#error-display");
 
