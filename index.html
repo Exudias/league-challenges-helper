@@ -14,8 +14,8 @@
         </div>
         <div id="input-container">
             <div id="region-select-box">
-                <label for="region">Select a region: &nbsp;</label>
-                <select name="region" id="region">
+                <label for="region-dropdown">Select a region: &nbsp;</label>
+                <select id="region-dropdown">
                     <option value="euw1" selected>EUW</option>
                     <option value="na1">NA</option>
                     <option value="eun1">EUNE</option>
@@ -35,17 +35,17 @@
                 </select>
             </div>
             <div id="player-input-box">
-                <label for="player-name">Player name: &nbsp;</label>
-                <input type="text" name="playerName" id="player-name" autofocus 
+                <label for="player-input">Player name: &nbsp;</label>
+                <input type="text" id="player-input" autofocus 
                 onfocus="let tempValue = this.value; this.value = ''; this.value = tempValue" >
             </div>
             <div id="slider-box">
-                <label for="display-amount-selector">Recommendation count: &nbsp;</label>
-                <input type="range" min="5" max="95" value="5" step="5" id="display-amount-selector">
-                <p id="display-amount-counter">5</p>
+                <label for="displayamount-slider">Recommendation count: &nbsp;</label>
+                <input type="range" min="5" max="95" value="5" step="5" id="displayamount-slider">
+                <p id="displayamount-counter">5</p>
             </div>
         </div>
-        <div id="error" class="hidden">
+        <div id="error-display" class="hidden">
             PLAYER NOT FOUND!
         </div>
         <div id="search-button-box">
@@ -56,15 +56,15 @@
             <div id="challenges-box">
                 <div class="suggestion-column">
                     <p>Easiest</p>
-                    <div id="highest-percentile" class="results-container"></div>
+                    <div id="easiest-column" class="results-container"></div>
                 </div>
                 <div class="suggestion-column">
                     <p>Closest level-up</p>
-                    <div id="closest-level-up" class="results-container"></div>
+                    <div id="closest-column" class="results-container"></div>
                 </div>
                 <div class="suggestion-column">
                     <p>Biggest point increase</p>
-                    <div id="point-increase" class="results-container"></div>
+                    <div id="biggestincrease-column" class="results-container"></div>
                 </div>
             </div>
         </div>
