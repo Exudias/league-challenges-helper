@@ -38,11 +38,15 @@ const PARTIAL_PLAYERDATA_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/player
 const BUTTON_LOADING_TEXT = "LOADING...";
 const BUTTON_SEARCH_TEXT = "SEARCH";
 
+const ERROR_PLAYER_NOT_FOUND = "PLAYER NOT FOUND";
+
 const ENGLISH_CODE = "en_GB";
 
 //// Functions
 async function initialize()
 {
+    displayAmount = displayAmountSlider.value;
+
     let defaultRegion = regionDropdown.value;
 
     const regionInformation = await getRegionInformation(defaultRegion);
@@ -50,14 +54,12 @@ async function initialize()
     loadChallengeGlobals(regionInformation);
 }
 
-const ERROR_PLAYER_NOT_FOUND = "PLAYER NOT FOUND";
-
 async function search()
 {
+    const searchedPlayer = playerNameInput.value;
+    if (searchedPlayer === loadedPlayer) return; // Don't overuse API if not necessary...
     errorDisplay.classList.add("hidden");
     errorDisplay.innerText = ERROR_PLAYER_NOT_FOUND;
-    clearColumns();
-    const searchedPlayer = playerNameInput.value;
     // Get player's data
     let playerData;
     try
@@ -66,10 +68,13 @@ async function search()
     }
     catch
     {
-        // TODO: Display error
         errorDisplay.classList.remove("hidden");
+        clearColumns();
+        playerFullData = undefined;
+        loadedPlayer = undefined;
         return;
     }
+    loadedPlayer = searchedPlayer;
     // Sample only necessary data
     const challengeData = playerData.challenges;
     // Format data
@@ -80,7 +85,7 @@ async function search()
         };
         return final;
     }, {});
-    const playerFullData = [];
+    playerFullData = [];
     // Create object of necessary display information
     Object.keys(loadedChallengeInformation).forEach(key => {
         const challInformation = loadedChallengeInformation[key];
@@ -135,11 +140,13 @@ async function search()
         playerFullData.push(fullDataItem);
     });
 
-    displayInColumns(playerFullData, 5);
+    displayInColumns(playerFullData, displayAmount);
 }
 
 function displayInColumns(data, amountToDisplay)
 {
+    clearColumns();
+
     const sortedByEasiest = [...data].sort((a, b) => {
         return b.nextLevelPercentile - a.nextLevelPercentile;
     });
@@ -254,7 +261,7 @@ async function getRegionInformation(region)
     return {config: challengeConfig, percentiles: challengePercentiles};
 }
 
-// GET functions
+// GET from API functions
 async function getRegionChallengePercentilesJSON(region) // returns object with ID key
 {
     const PERCENTILES_ENDPOINT = "https://" + region + PARTIAL_PERCENTILES_ENDPOINT;
@@ -342,11 +349,18 @@ const errorDisplay = document.querySelector("#error-display");
 //// Globals
 let loadedChallengeInformation; // ID, name, description
 let loadedChallengePercentiles;
+let playerFullData;
+let displayAmount;
+let loadedPlayer;
 
 //// Events
 regionDropdown.addEventListener("change", async () => {
     const currentRegion = regionDropdown.value;
     const regionInformation = await getRegionInformation(currentRegion);
+    // void loaded player data
+    loadedPlayer = undefined; 
+    playerFullData = undefined;
+    clearColumns();
 
     loadChallengeGlobals(regionInformation);
 });
@@ -359,6 +373,15 @@ playerNameInput.addEventListener("keypress", function(event) {
       event.preventDefault();
       // Trigger the button element with a click
       searchButton.click();
+    }
+});
+
+displayAmountSlider.addEventListener("change", () => {
+    displayAmountCounter.innerText = displayAmountSlider.value;
+    displayAmount = displayAmountSlider.value;
+    if (playerFullData !== undefined)
+    {
+        displayInColumns(playerFullData, displayAmount);
     }
 });
 
