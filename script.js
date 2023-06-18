@@ -3,6 +3,7 @@ const API_KEY = "RGAPI-3e5dd52a-40a2-4d33-8a5c-9f644a037bdb";
 
 const LEVEL_INFORMATION = 
 {
+    NONE: {level: -1, points: 0},
     IRON: {level: 0, points: 5},   
     BRONZE: {level: 1, points: 10},   
     SILVER: {level: 2, points: 15},   
@@ -12,6 +13,21 @@ const LEVEL_INFORMATION =
     MASTER: {level: 6, points: 100},   
     GRANDMASTER: {level: 7, points: 100},   
     CHALLENGER: {level: 8, points: 100},   
+}
+
+// TODO: Fix this, this is awful, integrate with LEVEL_INFORMATION
+const POINTS_FROM_LEVEL_ID = 
+{
+    "-1": 0,
+    0: 5,
+    1: 10,
+    2: 15,
+    3: 25,
+    4: 40,
+    5: 60,
+    6: 100,
+    7: 100,
+    8: 100,
 }
 
 const PARTIAL_CONFIG_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/config";
@@ -32,6 +48,93 @@ async function initialize()
     const regionInformation = await getRegionInformation(defaultRegion);
 
     loadChallengeGlobals(regionInformation);
+}
+
+async function search()
+{
+    // TODO: Clear suggestions
+    const searchedPlayer = playerNameInput.value;
+    // Get player's data
+    let playerData;
+    try
+    {
+        playerData = await getPlayerDataJSONFromName(searchedPlayer);
+    }
+    catch
+    {
+        // TODO: Display error
+        return;
+    }
+    // Sample only necessary data
+    const challengeData = playerData.challenges;
+    // Format data
+    const objectifiedData = challengeData.reduce((final, item) => {
+        final[item.challengeId] = {
+            level: item.level,
+            score: item.value
+        };
+        return final;
+    }, {});
+    const playerFullData = [];
+    // Create object of necessary display information
+    Object.keys(loadedChallengeInformation).forEach(key => {
+        const challInformation = loadedChallengeInformation[key];
+        const playerChallData = objectifiedData[key];
+        const percentileData = loadedChallengePercentiles[key];
+        // console.log(challInformation);
+        // console.log(playerChallData);
+        // console.log(percentileData);
+        // console.log("---");
+
+        // Initialize object
+        const fullDataItem = {};
+        // Basic stuff
+        fullDataItem.id = key;
+        fullDataItem.name = challInformation.name;
+        fullDataItem.description = challInformation.description;
+        fullDataItem.thresholds = challInformation.thresholds;
+        fullDataItem.maxLevel = LEVEL_INFORMATION[challInformation.maxLevel].level;
+        // Player-dependant stuff
+        if (playerChallData === undefined)
+        {
+            fullDataItem.playerLevel = -1;
+            fullDataItem.playerScore = 0;
+        }
+        else
+        {
+            fullDataItem.playerLevel = LEVEL_INFORMATION[playerChallData.level].level;
+            fullDataItem.playerScore = playerChallData.score;
+        }
+        // Seperately calculated stuff
+        for (let i = fullDataItem.playerLevel + 1; i < Object.keys(LEVEL_INFORMATION).length; i++)
+        {
+            if (challInformation.thresholds[i] === undefined) continue;
+            fullDataItem.nextLevel = i;
+            break;
+        }
+        // Don't take into account if maxed/already master level, no points to gain
+        if (fullDataItem.nextLevel === undefined || fullDataItem.nextLevel > LEVEL_INFORMATION["MASTER"].level)
+        {
+            return;
+        }
+        // Stats for display sorting
+        // Points from getting to next level
+        const playerPoints = POINTS_FROM_LEVEL_ID[fullDataItem.playerLevel];
+        const nextLevelPoints = POINTS_FROM_LEVEL_ID[fullDataItem.nextLevel];
+        fullDataItem.pointsFromLevelUp = nextLevelPoints - playerPoints;
+        // Percent to next level    
+        const scoreForCurrentLevel = fullDataItem.thresholds[fullDataItem.playerLevel];
+        const scoreForNextLevel = fullDataItem.thresholds[fullDataItem.nextLevel];
+        const playerScore = fullDataItem.playerScore;
+        fullDataItem.percentToNextLevel = (playerScore - scoreForCurrentLevel) / (scoreForNextLevel - scoreForCurrentLevel);
+        // Next level percentile
+        fullDataItem.nextLevelPercentile = percentileData[fullDataItem.nextLevel];
+
+        // Add to list
+        playerFullData.push(fullDataItem);
+    });
+
+    console.log(playerFullData);
 }
 
 function loadChallengeGlobals(regionInformation)
@@ -55,16 +158,31 @@ function loadChallengeGlobals(regionInformation)
 
     // Reduce into object with ID key with all relevant info
     loadedChallengeInformation = [...filteredConfigInformation].reduce((final, item) => {
-        final[item.id] = {name: item.localizedNames[ENGLISH_CODE].name, 
+        let numerifiedThresholds = {};
+        Object.keys(item.thresholds).forEach(thresholdsName => {
+            numerifiedThresholds[LEVEL_INFORMATION[thresholdsName].level] = item.thresholds[thresholdsName];
+        });
+        final[item.id] = {
+            name: item.localizedNames[ENGLISH_CODE].name, 
             description: item.localizedNames[ENGLISH_CODE].shortDescription,
-            thresholds: item.thresholds, maxLevel: getMaxThresholdNumeric(item.thresholds)}; 
-        return final}
-    , {});
-
-    console.log(loadedChallengeInformation);
+            thresholds: numerifiedThresholds, 
+            maxLevel: getMaxThresholdNumeric(item.thresholds)
+        }; 
+        return final;
+    }, {});
     
     // Percentiles
-    loadedChallengePercentiles = regionInformation.percentiles;
+    let numerifiedPercentiles = {};
+    Object.keys(regionInformation.percentiles).forEach(entryId => {
+        entry = regionInformation.percentiles[entryId];
+        let numerifiedPercentileForEntry = {};
+        Object.keys(entry).forEach(thresholdName => {
+            numerifiedPercentileForEntry[LEVEL_INFORMATION[thresholdName].level] = regionInformation.percentiles[entryId][thresholdName];
+        });
+        numerifiedPercentiles[entryId] = numerifiedPercentileForEntry;
+    });
+    loadedChallengePercentiles = numerifiedPercentiles;
+    console.log("Database loaded!");
 }
 
 async function getRegionInformation(region)
@@ -77,6 +195,8 @@ async function getRegionInformation(region)
 
     searchButton.innerText = BUTTON_SEARCH_TEXT;
     searchButton.disabled = false;
+
+    console.log("Getting info from " + region);
 
     return {config: challengeConfig, percentiles: challengePercentiles};
 }
@@ -94,6 +214,24 @@ async function getRegionChallengeConfigJSON(region) // returns list of objects
     const CONFIG_ENDPOINT = "https://" + region + PARTIAL_CONFIG_ENDPOINT;
 
     return JSON.parse(await makeRequest("GET", CONFIG_ENDPOINT + "?api_key=" + API_KEY));
+}
+
+async function getPlayerDataJSONFromName(name)
+{
+    const currentRegion = regionDropdown.value;
+    const SUMMONERBYNAME_ENDPOINT = "https://" + currentRegion + PARTIAL_SUMMONERBYNAME_ENDPOINT + name;
+
+    const summoner = await makeRequest("GET", SUMMONERBYNAME_ENDPOINT + "?api_key=" + API_KEY);
+
+    return await getChallengeDataJSONFromPUUID(JSON.parse(summoner).puuid);
+}
+
+async function getChallengeDataJSONFromPUUID(puuid)
+{
+    const currentRegion = regionDropdown.value;
+    const PLAYERDATA_ENDPOINT = "https://" + currentRegion + PARTIAL_PLAYERDATA_ENDPOINT + puuid;
+
+    return JSON.parse(await makeRequest("GET", PLAYERDATA_ENDPOINT + "?api_key=" + API_KEY));
 }
 
 /// Helper functions
@@ -151,5 +289,24 @@ const errorDisplay = document.querySelector("#error-display");
 //// Globals
 let loadedChallengeInformation; // ID, name, description
 let loadedChallengePercentiles;
+
+//// Events
+regionDropdown.addEventListener("change", async () => {
+    const currentRegion = regionDropdown.value;
+    const regionInformation = await getRegionInformation(currentRegion);
+
+    loadChallengeGlobals(regionInformation);
+});
+
+searchButton.addEventListener("click", search);
+
+playerNameInput.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      // Cancel the default action, if needed
+      event.preventDefault();
+      // Trigger the button element with a click
+      searchButton.click();
+    }
+});
 
 initialize();
