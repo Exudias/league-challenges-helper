@@ -9,12 +9,13 @@
 </head>
 <body>
     <div id="main-container">
-        <div id="title-box">
-            LoL Challenges Helper
+        <div id="title-container">
+            <h1 id="title">LoL Challenges Helper</h1>
         </div>
         <div id="input-container">
+            <h2 id="inputs-title">Inputs</h2>
             <div id="region-select-box">
-                <label for="region-dropdown">Select a region: &nbsp;</label>
+                <label for="region-dropdown">REGION</label>
                 <select id="region-dropdown">
                     <option value="euw1" selected>EUW</option>
                     <option value="na1">NA</option>
@@ -35,24 +36,24 @@
                 </select>
             </div>
             <div id="player-input-box">
-                <label for="player-input">Player name: &nbsp;</label>
+                <label for="player-input">PLAYER</label>
                 <input type="text" id="player-input" autofocus 
                 onfocus="let tempValue = this.value; this.value = ''; this.value = tempValue" >
             </div>
             <div id="slider-box">
-                <label for="displayamount-slider">Recommendation count: &nbsp;</label>
+                <label for="displayamount-slider">SHOW #</label>
                 <input type="range" min="5" max="95" value="5" step="5" id="displayamount-slider">
                 <p id="displayamount-counter">5</p>
             </div>
-        </div>
-        <div id="error-display" class="hidden">
-            PLAYER NOT FOUND!
-        </div>
-        <div id="search-button-box">
-            <button type="button" id="search-button">SEARCH</button>
+            <div id="error-display" class="hidden">
+                PLAYER NOT FOUND!
+            </div>
+            <div id="search-button-box">
+                <button type="button" id="search-button">SEARCH</button>
+            </div>
         </div>
         <div id="results">
-            Recommended challenges to do:
+            RECOMMENDATIONS
             <div id="challenges-box">
                 <div class="suggestion-column">
                     <p>Easiest</p>

@@ -179,7 +179,9 @@ function displayInColumns(data, amountToDisplay)
         const increasePoints = sortedByBiggestIncrease[i].pointsFromLevelUp;
 
         let easiestText = `${easiestPercent}% of players have the next tier.\n\n${sortedByClosest[i].description}`;
-        let closestText = `Progress: ${closestPercent}%\n\n${sortedByClosest[i].description}`;
+        //let closestText = `Progress: ${closestPercent}%\n\n${sortedByClosest[i].description}`;
+        let closestText = `${sortedByClosest[i].playerScore}/${sortedByClosest[i].thresholds[sortedByClosest[i].nextLevel]}
+        \n\n${sortedByClosest[i].description}`;
         let increaseText = `You will get ${increasePoints} points for leveling up.\n\n${sortedByClosest[i].description}`;
 
         easiestDesc.innerText = easiestText.replace(/<\/?[^>]+(>|$)/g, "");
@@ -195,6 +197,7 @@ function displayInColumns(data, amountToDisplay)
         biggestIncreaseColumn.appendChild(increaseEntry);
         increaseEntry.appendChild(increaseDesc);
     }
+    console.log(playerFullData);
 }
 
 function clearColumns()
