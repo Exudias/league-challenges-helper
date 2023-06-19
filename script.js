@@ -134,7 +134,14 @@ async function search()
         const playerScore = fullDataItem.playerScore;
         fullDataItem.percentToNextLevel = (playerScore - scoreForCurrentLevel) / (scoreForNextLevel - scoreForCurrentLevel);
         // Next level percentile
-        fullDataItem.nextLevelPercentile = percentileData[fullDataItem.nextLevel];
+        if (percentileData === undefined)
+        {
+            fullDataItem.nextLevelPercentile = 0;
+        }
+        else
+        {
+            fullDataItem.nextLevelPercentile = percentileData[fullDataItem.nextLevel];
+        }
 
         // Add to list
         playerFullData.push(fullDataItem);
@@ -197,7 +204,6 @@ function displayInColumns(data, amountToDisplay)
         biggestIncreaseColumn.appendChild(increaseEntry);
         increaseEntry.appendChild(increaseDesc);
     }
-    console.log(playerFullData);
 }
 
 function clearColumns()
