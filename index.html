@@ -12,38 +12,38 @@
     <div id="main-container">
         <div id="header">
             <h1 id="title">LoL Challenges Helper</h1>
-        </div>
-        <div id="input-container">
-            <div id="region-select-box">
+            <div id="input-container">
                 <div id="player-input-box">
                     <input type="text" id="player-input" autofocus 
                     onfocus="let tempValue = this.value; this.value = ''; this.value = tempValue" >
                 </div>
-                <select id="region-dropdown">
-                    <option value="euw1" selected>EUW</option>
-                    <option value="na1">NA</option>
-                    <option value="eun1">EUNE</option>
-                    <option value="kr">KR</option>
-                    <option value="br1">BR</option>
-                    <option value="jp1">JP</option>
-                    <option value="ru">RU</option>
-                    <option value="oc1">OCE</option>
-                    <option value="tr1">TR</option>
-                    <option value="la1">LAN</option>
-                    <option value="la2">LAS</option>
-                    <option value="ph2">PH</option>
-                    <option value="sg2">SG</option>
-                    <option value="th2">TH</option>
-                    <option value="tw2">TW</option>
-                    <option value="vn2">VN</option>
-                </select>
+                <div id="region-select-box">
+                    <select id="region-dropdown">
+                        <option value="euw1" selected>EUW</option>
+                        <option value="na1">NA</option>
+                        <option value="eun1">EUNE</option>
+                        <option value="kr">KR</option>
+                        <option value="br1">BR</option>
+                        <option value="jp1">JP</option>
+                        <option value="ru">RU</option>
+                        <option value="oc1">OCE</option>
+                        <option value="tr1">TR</option>
+                        <option value="la1">LAN</option>
+                        <option value="la2">LAS</option>
+                        <option value="ph2">PH</option>
+                        <option value="sg2">SG</option>
+                        <option value="th2">TH</option>
+                        <option value="tw2">TW</option>
+                        <option value="vn2">VN</option>
+                    </select>
+                </div>
             </div>
+            <h1 id="status">Status: Loaded!</h1>
         </div>
         <div id="error-display" class="hidden">
             PLAYER NOT FOUND!
         </div>
         <div id="results">
-            RECOMMENDATIONS
             <div id="challenges-box">
                 <div class="suggestion-column">
                     <p>Easiest</p>

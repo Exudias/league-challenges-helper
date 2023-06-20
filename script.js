@@ -36,19 +36,32 @@ const PARTIAL_SUMMONERBYNAME_ENDPOINT = ".api.riotgames.com/lol/summoner/v4/summ
 const PARTIAL_PLAYERDATA_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/player-data/";
 
 const ERROR_PLAYER_NOT_FOUND = "PLAYER NOT FOUND";
+const ERROR_DATABASE_NOT_LOADED = "DATABASE NOT LOADED, TRY AGAIN";
 
 const ENGLISH_CODE = "en_GB";
+
+const STATUS_LOADING = "Status: Loading...";
+const STATUS_LOADED = "Status: Loaded!";
 
 const DISPLAY_AMOUNT = 50;
 
 //// Functions
 async function initialize()
 {
-    let defaultRegion = regionDropdown.value;
+    await getRegionInfoAndLoadGlobals();
+}
 
-    const regionInformation = await getRegionInformation(defaultRegion);
+async function getRegionInfoAndLoadGlobals()
+{
+    loadingDatabase = true;
+    statusText.textContent = STATUS_LOADING;
+    const currentRegion = regionDropdown.value;
 
-    loadChallengeGlobals(regionInformation);
+    const regionInformation = await getRegionInformation(currentRegion);
+
+    await loadChallengeGlobals(regionInformation);
+    statusText.textContent = STATUS_LOADED;
+    loadingDatabase = false;
 }
 
 async function search()
@@ -344,23 +357,25 @@ const biggestIncreaseColumn = document.querySelector("#biggestincrease-column");
 const easiestColumn = document.querySelector("#easiest-column");
 // Error display
 const errorDisplay = document.querySelector("#error-display");
+// Status text
+const statusText = document.querySelector("#status");
 
 //// Globals
 let loadedChallengeInformation; // ID, name, description
 let loadedChallengePercentiles;
 let playerFullData;
 let loadedPlayer;
+let loadingDatabase;
+
 
 //// Events
 regionDropdown.addEventListener("change", async () => {
-    const currentRegion = regionDropdown.value;
-    const regionInformation = await getRegionInformation(currentRegion);
     // void loaded player data
     loadedPlayer = undefined; 
     playerFullData = undefined;
     clearColumns();
 
-    loadChallengeGlobals(regionInformation);
+    await getRegionInfoAndLoadGlobals();
 });
 
 playerNameInput.addEventListener("keypress", function(event) {
@@ -368,7 +383,15 @@ playerNameInput.addEventListener("keypress", function(event) {
       // Cancel the default action, if needed
       event.preventDefault();
       // Trigger the button element with a click
-      search();
+      if (loadingDatabase)
+      {
+        errorDisplay.classList.remove("hidden");
+        errorDisplay.innerText = ERROR_DATABASE_NOT_LOADED;
+      }
+      else
+      {
+        search();
+      }
     }
 });
 
