@@ -35,18 +35,15 @@ const PARTIAL_PERCENTILES_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/chall
 const PARTIAL_SUMMONERBYNAME_ENDPOINT = ".api.riotgames.com/lol/summoner/v4/summoners/by-name/";
 const PARTIAL_PLAYERDATA_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/player-data/";
 
-const BUTTON_LOADING_TEXT = "LOADING...";
-const BUTTON_SEARCH_TEXT = "SEARCH";
-
 const ERROR_PLAYER_NOT_FOUND = "PLAYER NOT FOUND";
 
 const ENGLISH_CODE = "en_GB";
 
+const DISPLAY_AMOUNT = 50;
+
 //// Functions
 async function initialize()
 {
-    displayAmount = displayAmountSlider.value;
-
     let defaultRegion = regionDropdown.value;
 
     const regionInformation = await getRegionInformation(defaultRegion);
@@ -147,7 +144,7 @@ async function search()
         playerFullData.push(fullDataItem);
     });
 
-    displayInColumns(playerFullData, displayAmount);
+    displayInColumns(playerFullData, DISPLAY_AMOUNT);
 }
 
 function displayInColumns(data, amountToDisplay)
@@ -262,14 +259,8 @@ function loadChallengeGlobals(regionInformation)
 
 async function getRegionInformation(region)
 {
-    searchButton.disabled = true;
-    searchButton.innerText = BUTTON_LOADING_TEXT;
-
     const challengeConfig = await getRegionChallengeConfigJSON(region);
     const challengePercentiles = await getRegionChallengePercentilesJSON(region);
-
-    searchButton.innerText = BUTTON_SEARCH_TEXT;
-    searchButton.disabled = false;
 
     return {config: challengeConfig, percentiles: challengePercentiles};
 }
@@ -345,11 +336,6 @@ function getMaxThresholdNumeric(challengeThresholds)
 const regionDropdown = document.querySelector("#region-dropdown");
 // Player name
 const playerNameInput = document.querySelector("#player-input");
-// Display amount
-const displayAmountSlider = document.querySelector("#displayamount-slider");
-const displayAmountCounter = document.querySelector("#displayamount-counter");
-// Submit
-const searchButton = document.querySelector("#search-button");
 
 /// Information display
 // Recommendation columns
@@ -363,7 +349,6 @@ const errorDisplay = document.querySelector("#error-display");
 let loadedChallengeInformation; // ID, name, description
 let loadedChallengePercentiles;
 let playerFullData;
-let displayAmount;
 let loadedPlayer;
 
 //// Events
@@ -378,23 +363,12 @@ regionDropdown.addEventListener("change", async () => {
     loadChallengeGlobals(regionInformation);
 });
 
-searchButton.addEventListener("click", search);
-
 playerNameInput.addEventListener("keypress", function(event) {
     if (event.key === "Enter") {
       // Cancel the default action, if needed
       event.preventDefault();
       // Trigger the button element with a click
-      searchButton.click();
-    }
-});
-
-displayAmountSlider.addEventListener("change", () => {
-    displayAmountCounter.innerText = displayAmountSlider.value;
-    displayAmount = displayAmountSlider.value;
-    if (playerFullData !== undefined)
-    {
-        displayInColumns(playerFullData, displayAmount);
+      search();
     }
 });
 
