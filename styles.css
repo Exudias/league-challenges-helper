@@ -183,6 +183,8 @@ h1, h2, h3, h4, h5 {
     justify-content: space-between;
     padding: 0 36px;
 
+    background-color: var(--blue5);
+
     border-bottom: 0.5vw solid var(--gold4);
 }
 
@@ -321,7 +323,9 @@ h1, h2, h3, h4, h5 {
     width: 100%;
     margin: 0;
     
-    border-bottom: 4px solid var(--gold4);
+    border-image: linear-gradient(90deg, transparent 0%, var(--gold4) 30%, var(--gold4) 70%, transparent 100%) 1;
+    border-width: 4px;
+    border-style: solid;
 
     padding: 16px 0;
 }
