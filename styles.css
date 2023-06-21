@@ -361,6 +361,7 @@ h1, h2, h3, h4, h5 {
     align-items: center;
     justify-content: center;
     position: relative;
+    transition: 0.2s;
 }
 
 .results-container > p > p {
@@ -391,6 +392,12 @@ h1, h2, h3, h4, h5 {
     opacity: 0;
     transform: translateY(-45%);
     transition: 0.25s;
+}
+
+.results-container > p:hover {
+    background-color: transparent;
+    color: transparent;
+    border-color: transparent;
 }
 
 .results-container > p:hover > p {

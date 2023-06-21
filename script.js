@@ -48,6 +48,9 @@ const DISPLAY_AMOUNT = 50;
 const CHALLENGE_INFO_HIDE_ID = "challenge-full-info-hidden";
 const CHALLENGE_INFO_SHOW_ID = "challenge-full-info-shown";
 
+const ARAM_PREFIX = "101";
+const BOT_PREFIX = "120";
+
 //// Functions
 async function initialize()
 {
@@ -197,10 +200,10 @@ function displayInColumns(data, amountToDisplay)
         const easiestPercent = (sortedByEasiest[i].nextLevelPercentile * 100).toFixed(1);
         const increasePoints = sortedByBiggestIncrease[i].pointsFromLevelUp;
 
-        let easiestText = `${easiestPercent}% of players have the next tier.\n\n${sortedByClosest[i].description}`;
+        let easiestText = `${easiestPercent}% of players have the next tier.\n\n${sortedByEasiest[i].description}`;
         let closestText = `${sortedByClosest[i].playerScore}/${sortedByClosest[i].thresholds[sortedByClosest[i].nextLevel]}
         \n\n${sortedByClosest[i].description}`;
-        let increaseText = `You will get ${increasePoints} points for leveling up.\n\n${sortedByClosest[i].description}`;
+        let increaseText = `You will get ${increasePoints} points for leveling up.\n\n${sortedByBiggestIncrease[i].description}`;
 
         easiestDesc.innerText = easiestText.replace(/<\/?[^>]+(>|$)/g, "");
         closestDesc.innerText = closestText.replace(/<\/?[^>]+(>|$)/g, "");
@@ -219,6 +222,7 @@ function displayInColumns(data, amountToDisplay)
         closestEntry.onclick = function(event){event.stopPropagation(); showChallenge(sortedByClosest[i].id)};
         increaseEntry.onclick = function(event){event.stopPropagation(); showChallenge(sortedByBiggestIncrease[i].id)};
     }
+    console.log(playerFullData);
 }
 
 const challengeLevelDisplay = document.querySelector("#challenge-level");
@@ -243,11 +247,32 @@ function showChallenge(id)
     const pointsDisplay = `${challToDisplay.playerScore}/${challToDisplay.thresholds[challToDisplay.nextLevel]}`;
     const progress = challToDisplay.percentToNextLevel * 100;
 
+    challengeDescriptionDisplay.innerText = "";
+    if (id.toString().startsWith(ARAM_PREFIX))
+    {
+        challengeDescriptionDisplay.innerText = "(ARAM)\n";
+    }
+    else if (id.toString().startsWith(BOT_PREFIX))
+    {
+        challengeDescriptionDisplay.innerText = "(BOT)\n";
+    }
+
     challengeLevelDisplay.innerText = nextLevel;
     challengeNameDisplay.innerText = name;
-    challengeDescriptionDisplay.innerText = desc.replace(/<\/?[^>]+(>|$)/g, "");
+    challengeDescriptionDisplay.innerText += desc.replace(/<\/?[^>]+(>|$)/g, "");
     challengeInfoProgressNumbers.innerText = pointsDisplay;
     challengeInfoProgressBar.value = progress;
+}
+
+function hideChallenge()
+{
+    challengeInfoDisplay.id = CHALLENGE_INFO_HIDE_ID;
+
+    challengeLevelDisplay.innerText = "";
+    challengeNameDisplay.innerText = "";
+    challengeDescriptionDisplay.innerText = "";
+    challengeInfoProgressNumbers.innerText = "";
+    challengeInfoProgressBar.value = 0;
 }
 
 function clearColumns()
@@ -431,21 +456,17 @@ playerNameInput.addEventListener("keypress", function(event) {
     }
 });
 
-challengeInfoClose.addEventListener("click", () => {
-    challengeInfoDisplay.id = CHALLENGE_INFO_HIDE_ID;
-});
+challengeInfoClose.addEventListener("click", hideChallenge);
 
 challengeInfoDisplay.addEventListener("click", function(event) {
     event.stopPropagation();
 });
 
-document.addEventListener("click", () => {
-    challengeInfoDisplay.id = CHALLENGE_INFO_HIDE_ID;
-});
+document.addEventListener("click", hideChallenge);
 
 document.addEventListener("keyup", function(event) {
     if (event.key === "Escape") {
-        challengeInfoDisplay.id = CHALLENGE_INFO_HIDE_ID;
+        hideChallenge();
     }
 }, true);
 
