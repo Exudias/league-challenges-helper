@@ -45,6 +45,9 @@ const STATUS_LOADED = "Status: Loaded!";
 
 const DISPLAY_AMOUNT = 50;
 
+const CHALLENGE_INFO_HIDE_ID = "challenge-full-info-hidden";
+const CHALLENGE_INFO_SHOW_ID = "challenge-full-info-shown";
+
 //// Functions
 async function initialize()
 {
@@ -192,11 +195,9 @@ function displayInColumns(data, amountToDisplay)
         increaseEntry.innerText = sortedByBiggestIncrease[i].name;
 
         const easiestPercent = (sortedByEasiest[i].nextLevelPercentile * 100).toFixed(1);
-        const closestPercent = (sortedByClosest[i].percentToNextLevel * 100).toFixed(1);
         const increasePoints = sortedByBiggestIncrease[i].pointsFromLevelUp;
 
         let easiestText = `${easiestPercent}% of players have the next tier.\n\n${sortedByClosest[i].description}`;
-        //let closestText = `Progress: ${closestPercent}%\n\n${sortedByClosest[i].description}`;
         let closestText = `${sortedByClosest[i].playerScore}/${sortedByClosest[i].thresholds[sortedByClosest[i].nextLevel]}
         \n\n${sortedByClosest[i].description}`;
         let increaseText = `You will get ${increasePoints} points for leveling up.\n\n${sortedByClosest[i].description}`;
@@ -213,7 +214,20 @@ function displayInColumns(data, amountToDisplay)
 
         biggestIncreaseColumn.appendChild(increaseEntry);
         increaseEntry.appendChild(increaseDesc);
+
+        easiestEntry.onclick = function(){showChallenge(sortedByEasiest[i].id)};
+        closestEntry.onclick = function(){showChallenge(sortedByClosest[i].id)};
+        increaseEntry.onclick = function(){showChallenge(sortedByBiggestIncrease[i].id)};
     }
+}
+
+
+
+function showChallenge(id)
+{
+    challengeInfoDisplay.id = CHALLENGE_INFO_SHOW_ID;
+
+
 }
 
 function clearColumns()
@@ -359,6 +373,8 @@ const easiestColumn = document.querySelector("#easiest-column");
 const errorDisplay = document.querySelector("#error-display");
 // Status text
 const statusText = document.querySelector("#status");
+// Challenge full display
+const challengeInfoDisplay = document.querySelector(".challenge-info");
 
 //// Globals
 let loadedChallengeInformation; // ID, name, description
