@@ -184,6 +184,7 @@ h1, h2, h3, h4, h5 {
     padding: 0 36px;
 
     background-color: var(--blue5);
+    background: linear-gradient(90deg, var(--blue4) 0%, var(--blue5) 3%, var(--blue5) 97%, var(--blue4) 100%);
 
     border-bottom: 0.5vw solid var(--gold4);
 }
@@ -410,6 +411,9 @@ h1, h2, h3, h4, h5 {
     width: 100%;
     
     border-top: 8px solid var(--gold4);
+
+    background-color: var(--blue5);
+    background: linear-gradient(180deg, var(--blue4) 0%, var(--blue5) 30%, var(--blue5) 100%);
 
     padding: 12px 0;
 
