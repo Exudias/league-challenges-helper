@@ -405,7 +405,7 @@ h1, h2, h3, h4, h5 {
 }
 
 #challenge-full-info-shown, #challenge-full-info-hidden {
-    position: absolute;
+    position: fixed;
 
     top: calc(20vh / 2);
     left: calc(20vw / 2);
@@ -420,13 +420,10 @@ h1, h2, h3, h4, h5 {
 }
 
 #challenge-full-info-hidden {
-    display: none;
+    opacity: 0;
+    pointer-events: none;
 
-    width: 0;
-    height: 0;
-
-    top: 50vh;
-    left: 50vw;
+    top: 100vh;
 }
 
 #challenge-full-info-shown {
@@ -450,28 +447,50 @@ h1, h2, h3, h4, h5 {
     display: flex;
     align-items: center;
 
-    text-align: center;
-
     font-size: 3vw;
 }
 
-#challenge-percentile {
+#challenge-level {
     flex: 1;
     font-size: 1.5vw;
     text-align: left;
     justify-content: flex-start;
+    align-items: flex-start;
 }
 
-#challenge-category {
+#challenge-close {
     flex: 1;
     font-size: 1.5vw;
     text-align: right;
     justify-content: flex-end;
+    align-items: flex-start;
+}
+
+#close-button {
+    width: 4vw;
+    height: 4vw;
+    font-size: 3vw;
+    line-height: 3vw;
+    background-color: var(--blue3);
+    border: 0.5vw solid var(--blue4);
+    border-radius: 1vw;
+    color: var(--blue1);
+}
+
+#close-button:hover {
+    color: var(--blue4);
+}
+
+#close-button:active {
+    background-color: var(--blue2);
+    color: var(--blue4);
 }
 
 #challenge-name {
     flex: 5;
     justify-content: center;
+    align-items: center;
+    text-align: center;
 
     font-size: 5vw;
 }

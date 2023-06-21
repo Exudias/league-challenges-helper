@@ -221,13 +221,31 @@ function displayInColumns(data, amountToDisplay)
     }
 }
 
-
+const challengeLevelDisplay = document.querySelector("#challenge-level");
+const challengeNameDisplay = document.querySelector("#challenge-name");
+const challengeDescriptionDisplay = document.querySelector("#challenge-info-description");
+const challengeInfoProgressNumbers = document.querySelector("#challenge-info-progress-numbers"); 
+const challengeInfoProgressBar = document.querySelector("#challenge-info-progress-bar"); 
 
 function showChallenge(id)
 {
     challengeInfoDisplay.id = CHALLENGE_INFO_SHOW_ID;
 
+    const challToDisplay = playerFullData.filter(data => {
+        if (data.id === id) return true;
+    })[0];
 
+    const nextLevel = challToDisplay.nextLevel;
+    const name = challToDisplay.name;
+    const desc = challToDisplay.description;
+    const pointsDisplay = `${challToDisplay.playerScore}/${challToDisplay.thresholds[challToDisplay.nextLevel]}`;
+    const progress = challToDisplay.percentToNextLevel * 100;
+
+    challengeLevelDisplay.innerText = nextLevel;
+    challengeNameDisplay.innerText = name;
+    challengeDescriptionDisplay.innerText = desc.replace(/<\/?[^>]+(>|$)/g, "");
+    challengeInfoProgressNumbers.innerText = pointsDisplay;
+    challengeInfoProgressBar.value = progress;
 }
 
 function clearColumns()
@@ -375,6 +393,7 @@ const errorDisplay = document.querySelector("#error-display");
 const statusText = document.querySelector("#status");
 // Challenge full display
 const challengeInfoDisplay = document.querySelector(".challenge-info");
+const challengeInfoClose = document.querySelector("#close-button");
 
 //// Globals
 let loadedChallengeInformation; // ID, name, description
@@ -410,5 +429,15 @@ playerNameInput.addEventListener("keypress", function(event) {
       }
     }
 });
+
+challengeInfoClose.addEventListener("click", () => {
+    challengeInfoDisplay.id = CHALLENGE_INFO_HIDE_ID;
+});
+
+document.addEventListener("keyup", function(event) {
+    if (event.key === "Escape") {
+        challengeInfoDisplay.id = CHALLENGE_INFO_HIDE_ID;
+    }
+}, true);
 
 initialize();
