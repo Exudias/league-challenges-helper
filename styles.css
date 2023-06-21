@@ -407,11 +407,14 @@ h1, h2, h3, h4, h5 {
 #challenge-full-info-shown, #challenge-full-info-hidden {
     position: fixed;
 
-    top: calc(20vh / 2);
-    left: calc(20vw / 2);
+    width: 40vw;
+    height: 50vh;
 
-    background: var(--blue4);
-    border: 0.5vw solid var(--blue3);
+    top: calc(50vh / 2);
+    left: calc(60vw / 2);
+
+    background: var(--blue5);
+    border: 0.5vw solid var(--gold3);
     border-radius: 0.5vw;
 
     padding: 1vw;
@@ -424,11 +427,11 @@ h1, h2, h3, h4, h5 {
     pointer-events: none;
 
     top: 100vh;
+    left: calc(60vw / 2);
 }
 
 #challenge-full-info-shown {
-    width: 80vw;
-    height: 80vh;
+    z-index: 99999;
 
     display: flex;
     flex-direction: column;
@@ -439,42 +442,49 @@ h1, h2, h3, h4, h5 {
     display: flex;
     justify-content: space-between;
 
+    font-family: beaufort;
+    text-transform: uppercase;
+    font-weight: bold;
+
     width: 100%;
-    height: 20%;
+    height: 30%;
 }
 
 #challenge-info-header > * {
     display: flex;
     align-items: center;
 
-    font-size: 3vw;
+    font-size: 1.5vw;
 }
 
 #challenge-level {
     flex: 1;
-    font-size: 1.5vw;
-    text-align: left;
-    justify-content: flex-start;
+    font-size: 1.25vw;
+    text-align: center;
+    justify-content: center;
     align-items: flex-start;
+
+    font-family: spiegel;
+    font-weight: bold;
 }
 
 #challenge-close {
     flex: 1;
-    font-size: 1.5vw;
+    font-size: 0.75vw;
     text-align: right;
     justify-content: flex-end;
     align-items: flex-start;
 }
 
 #close-button {
-    width: 4vw;
-    height: 4vw;
-    font-size: 3vw;
-    line-height: 3vw;
+    width: 2vw;
+    height: 2vw;
+    font-size: 1.5vw;
+    line-height: 1.5vw;
     background-color: var(--blue3);
-    border: 0.5vw solid var(--blue4);
-    border-radius: 1vw;
-    color: var(--blue1);
+    border-color: transparent;
+    border-radius: 0.5vw;
+    color: var(--gold3);
 }
 
 #close-button:hover {
@@ -492,19 +502,26 @@ h1, h2, h3, h4, h5 {
     align-items: center;
     text-align: center;
 
-    font-size: 5vw;
+    font-size: 2.5vw;
+    color: var(--gold3);
+
+    border-image: linear-gradient(90deg, transparent 0%, var(--gold4) 30%, var(--gold4) 70%, transparent 100%) 0 0 1 0;
+    border-width: 4px;
+    border-style: solid;
 }
 
 #challenge-info-description {
     width: 80%;
-    height: 70%;
+    height: 60%;
     text-align: center;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 5vw;
+    font-size: 2.5vw;
+    font-family: spiegel;
+    font-weight: normal;
 }
 
 #challenge-info-progress {
@@ -516,7 +533,7 @@ h1, h2, h3, h4, h5 {
     align-items: center;
     justify-content: center;
 
-    font-size: 2vw;
+    font-size: 1vw;
 }
 
 #challenge-info-progress p {

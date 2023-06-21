@@ -215,9 +215,9 @@ function displayInColumns(data, amountToDisplay)
         biggestIncreaseColumn.appendChild(increaseEntry);
         increaseEntry.appendChild(increaseDesc);
 
-        easiestEntry.onclick = function(){showChallenge(sortedByEasiest[i].id)};
-        closestEntry.onclick = function(){showChallenge(sortedByClosest[i].id)};
-        increaseEntry.onclick = function(){showChallenge(sortedByBiggestIncrease[i].id)};
+        easiestEntry.onclick = function(event){event.stopPropagation(); showChallenge(sortedByEasiest[i].id)};
+        closestEntry.onclick = function(event){event.stopPropagation(); showChallenge(sortedByClosest[i].id)};
+        increaseEntry.onclick = function(event){event.stopPropagation(); showChallenge(sortedByBiggestIncrease[i].id)};
     }
 }
 
@@ -235,7 +235,9 @@ function showChallenge(id)
         if (data.id === id) return true;
     })[0];
 
-    const nextLevel = challToDisplay.nextLevel;
+    const nextLevel = `${Object.keys(LEVEL_INFORMATION).filter(level => {
+        if (LEVEL_INFORMATION[level].level === challToDisplay.nextLevel) return true;
+    })[0]}\n(${challToDisplay.pointsFromLevelUp}p)`;
     const name = challToDisplay.name;
     const desc = challToDisplay.description;
     const pointsDisplay = `${challToDisplay.playerScore}/${challToDisplay.thresholds[challToDisplay.nextLevel]}`;
@@ -402,7 +404,6 @@ let playerFullData;
 let loadedPlayer;
 let loadingDatabase;
 
-
 //// Events
 regionDropdown.addEventListener("change", async () => {
     // void loaded player data
@@ -431,6 +432,14 @@ playerNameInput.addEventListener("keypress", function(event) {
 });
 
 challengeInfoClose.addEventListener("click", () => {
+    challengeInfoDisplay.id = CHALLENGE_INFO_HIDE_ID;
+});
+
+challengeInfoDisplay.addEventListener("click", function(event) {
+    event.stopPropagation();
+});
+
+document.addEventListener("click", () => {
     challengeInfoDisplay.id = CHALLENGE_INFO_HIDE_ID;
 });
 
