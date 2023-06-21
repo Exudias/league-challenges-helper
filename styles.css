@@ -408,9 +408,9 @@ h1, h2, h3, h4, h5 {
     position: fixed;
 
     width: 40vw;
-    height: 50vh;
+    height: 60vh;
 
-    top: calc(50vh / 2);
+    top: calc(40vh / 2);
     left: calc(60vw / 2);
 
     background: var(--blue5);
@@ -477,23 +477,24 @@ h1, h2, h3, h4, h5 {
 }
 
 #close-button {
-    width: 2vw;
-    height: 2vw;
-    font-size: 1.5vw;
-    line-height: 1.5vw;
-    background-color: var(--blue3);
+    width: 3vw;
+    height: 3vw;
+    font-size: 2.5vw;
+    line-height: 2.5vw;
+    background-color: var(--gold5);
     border-color: transparent;
     border-radius: 0.5vw;
     color: var(--gold3);
 }
 
 #close-button:hover {
-    color: var(--blue4);
+    background-color: var(--gold4);
+    color: var(--gold5);
 }
 
 #close-button:active {
-    background-color: var(--blue2);
-    color: var(--blue4);
+    background-color: var(--gold4);
+    color: var(--gold4);
 }
 
 #challenge-name {
@@ -512,7 +513,7 @@ h1, h2, h3, h4, h5 {
 
 #challenge-info-description {
     width: 80%;
-    height: 60%;
+    height: 50%;
     text-align: center;
 
     display: flex;
@@ -526,14 +527,23 @@ h1, h2, h3, h4, h5 {
 
 #challenge-info-progress {
     width: 80%;
-    height: 10%;
+    height: 20%;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
 
-    font-size: 1vw;
+    border-image: linear-gradient(90deg, transparent 0%, var(--gold4) 30%, var(--gold4) 70%, transparent 100%) 1 0 0 0;
+    border-width: 4px;
+    border-style: solid;
+
+    font-size: 2vw;
+}
+
+#challenge-info-progress-bar {
+    width: 80%;
+    accent-color: var(--gold3);
 }
 
 #challenge-info-progress p {
