@@ -277,7 +277,21 @@ h1, h2, h3, h4, h5 {
 
     padding: 4px;
 
-    font-size: 2vw;
+    font-size: 3vw;
+    color: var(--blue1);
+}
+
+#information:not(.hidden) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    font-size: 5vw;
+    font-family: spiegel;
+    font-weight: lighter;
+    font-style: italic;
     color: var(--blue1);
 }
 
@@ -299,6 +313,29 @@ h1, h2, h3, h4, h5 {
     font-size: 4vw;
 
     text-align: center;
+}
+
+#more-button {
+    width: 20%;
+    height: 5vw;
+    margin-bottom: 1vw;
+    background-color: var(--blue5);
+    border: none;
+    border-bottom: 0.5vw solid var(--blue7);
+    color: var(--blue1);
+    font-size: 2vw;
+    font-family: beaufort;
+    font-weight: bold;
+    border-radius: 0.25vw;
+}
+
+#more-button:hover {
+    border: 0.25vw solid var(--blue2);
+    border-bottom: 0.5vw solid var(--blue1);
+}
+
+#more-button:active {
+    color: var(--blue3);
 }
 
 #challenges-box {

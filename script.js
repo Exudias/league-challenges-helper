@@ -40,10 +40,11 @@ const ERROR_DATABASE_NOT_LOADED = "DATABASE NOT LOADED, TRY AGAIN";
 
 const ENGLISH_CODE = "en_GB";
 
-const STATUS_LOADING = "Status: Loading...";
-const STATUS_LOADED = "Status: Loaded!";
+const STATUS_LOADING = "Database loading...";
+const STATUS_LOADED = "Search any summoner name for recommendations!";
 
-const DISPLAY_AMOUNT = 50;
+const DISPLAY_START_AMOUNT = 5;
+const DISPLAY_ADD_AMOUNT = 15;
 
 const CHALLENGE_INFO_HIDE_ID = "challenge-full-info-hidden";
 const CHALLENGE_INFO_SHOW_ID = "challenge-full-info-shown";
@@ -54,19 +55,20 @@ const BOT_PREFIX = "120";
 //// Functions
 async function initialize()
 {
+    displayAmount = DISPLAY_START_AMOUNT;
     await getRegionInfoAndLoadGlobals();
 }
 
 async function getRegionInfoAndLoadGlobals()
 {
     loadingDatabase = true;
-    statusText.textContent = STATUS_LOADING;
+    informationDisplay.textContent = STATUS_LOADING;
     const currentRegion = regionDropdown.value;
 
     const regionInformation = await getRegionInformation(currentRegion);
 
     await loadChallengeGlobals(regionInformation);
-    statusText.textContent = STATUS_LOADED;
+    informationDisplay.textContent = STATUS_LOADED;
     loadingDatabase = false;
 }
 
@@ -163,12 +165,14 @@ async function search()
         playerFullData.push(fullDataItem);
     });
 
-    displayInColumns(playerFullData, DISPLAY_AMOUNT);
+    displayInColumns(playerFullData, displayAmount);
 }
 
 function displayInColumns(data, amountToDisplay)
 {
     clearColumns();
+    resultsContainer.classList.remove("hidden");
+    informationDisplay.classList.add("hidden");
 
     const sortedByEasiest = [...data].sort((a, b) => {
         return b.nextLevelPercentile - a.nextLevelPercentile;
@@ -184,6 +188,9 @@ function displayInColumns(data, amountToDisplay)
 
     for (let i = 0; i < amountToDisplay; i++)
     {
+        // if no more to show, stop
+        if (sortedByEasiest[i] === undefined || sortedByClosest[i] === undefined || sortedByBiggestIncrease[i] === undefined) return;
+        
         easiestEntry = document.createElement("p");
         easiestDesc = document.createElement("p");
 
@@ -277,6 +284,8 @@ function hideChallenge()
 
 function clearColumns()
 {
+    resultsContainer.classList.add("hidden");
+    informationDisplay.classList.remove("hidden");
     closestColumn.innerHTML = "";
     biggestIncreaseColumn.innerHTML = "";
     easiestColumn.innerHTML = "";
@@ -411,13 +420,15 @@ const playerNameInput = document.querySelector("#player-input");
 
 /// Information display
 // Recommendation columns
+const resultsContainer = document.querySelector("#results");
 const closestColumn = document.querySelector("#closest-column");
 const biggestIncreaseColumn = document.querySelector("#biggestincrease-column");
 const easiestColumn = document.querySelector("#easiest-column");
+const moreButton = document.querySelector("#more-button");
 // Error display
 const errorDisplay = document.querySelector("#error-display");
-// Status text
-const statusText = document.querySelector("#status");
+// Information display
+const informationDisplay = document.querySelector("#information");
 // Challenge full display
 const challengeInfoDisplay = document.querySelector(".challenge-info");
 const challengeInfoClose = document.querySelector("#close-button");
@@ -428,6 +439,7 @@ let loadedChallengePercentiles;
 let playerFullData;
 let loadedPlayer;
 let loadingDatabase;
+let displayAmount;
 
 //// Events
 regionDropdown.addEventListener("change", async () => {
@@ -469,5 +481,10 @@ document.addEventListener("keyup", function(event) {
         hideChallenge();
     }
 }, true);
+
+moreButton.addEventListener("click", () => {
+    displayAmount += DISPLAY_ADD_AMOUNT;
+    displayInColumns(playerFullData, displayAmount);
+});
 
 initialize();
