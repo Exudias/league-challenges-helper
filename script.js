@@ -44,7 +44,7 @@ const STATUS_LOADING = "Database loading...";
 const STATUS_LOADED = "Search any summoner name for recommendations!";
 
 const DISPLAY_START_AMOUNT = 5;
-const DISPLAY_ADD_AMOUNT = 15;
+const DISPLAY_ADD_AMOUNT = 5;
 
 const CHALLENGE_INFO_HIDE_ID = "challenge-full-info-hidden";
 const CHALLENGE_INFO_SHOW_ID = "challenge-full-info-shown";
