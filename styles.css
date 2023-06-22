@@ -508,13 +508,22 @@ h1, h2, h3, h4, h5 {
 
 #challenge-level {
     flex: 1;
+    flex-direction: column;
     font-size: 1.25vw;
     text-align: center;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: flex-start;
+    align-items: center;
+}
 
-    font-family: spiegel;
-    font-weight: bold;
+#level-rank {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+#level-rank img {
+    width: 33%;
 }
 
 #challenge-close {

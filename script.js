@@ -232,7 +232,7 @@ function displayInColumns(data, amountToDisplay)
     console.log(playerFullData);
 }
 
-const challengeLevelDisplay = document.querySelector("#challenge-level");
+const challengeLevelDisplay = document.querySelector("#level-rank");
 const challengeNameDisplay = document.querySelector("#challenge-name");
 const challengeDescriptionDisplay = document.querySelector("#challenge-info-description");
 const challengeInfoProgressNumbers = document.querySelector("#challenge-info-progress-numbers"); 
@@ -264,7 +264,11 @@ function showChallenge(id)
         challengeDescriptionDisplay.innerText = "(BOT)\n";
     }
 
-    challengeLevelDisplay.innerText = nextLevel;
+    const currentRankDisplay = challengeLevelDisplay.children[0];
+    const nextRankDisplay = challengeLevelDisplay.children[2];
+    currentRankDisplay.src = `images/ranks/${challToDisplay.playerLevel}.png`;
+    nextRankDisplay.src = `images/ranks/${challToDisplay.nextLevel}.png`;
+
     challengeNameDisplay.innerText = name;
     challengeDescriptionDisplay.innerText += desc.replace(/<\/?[^>]+(>|$)/g, "");
     challengeInfoProgressNumbers.innerText = pointsDisplay;
@@ -275,7 +279,6 @@ function hideChallenge()
 {
     challengeInfoDisplay.id = CHALLENGE_INFO_HIDE_ID;
 
-    challengeLevelDisplay.innerText = "";
     challengeNameDisplay.innerText = "";
     challengeDescriptionDisplay.innerText = "";
     challengeInfoProgressNumbers.innerText = "";
