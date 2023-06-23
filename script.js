@@ -189,7 +189,12 @@ function displayInColumns(data, amountToDisplay)
     for (let i = 0; i < amountToDisplay; i++)
     {
         // if no more to show, stop
-        if (sortedByEasiest[i] === undefined || sortedByClosest[i] === undefined || sortedByBiggestIncrease[i] === undefined) return;
+        if (sortedByEasiest[i] === undefined || sortedByClosest[i] === undefined || sortedByBiggestIncrease[i] === undefined)
+        {
+            moreButton.classList.add("hidden");
+            moreButton.disabled = true;
+            return;
+        }
         
         easiestEntry = document.createElement("p");
         easiestDesc = document.createElement("p");
