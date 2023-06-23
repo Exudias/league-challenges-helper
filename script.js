@@ -1,5 +1,5 @@
 // Constants
-const API_KEY = "RGAPI-23ea3b21-f8c1-4e79-9cae-8748df1a1c55";
+const API_KEY = "RGAPI-f5096f2c-cdd2-4a52-8d28-94bae005326f";
 
 const LEVEL_INFORMATION = 
 {
