@@ -230,7 +230,6 @@ h1, h2, h3, h4, h5 {
     position: fixed;
     width: 50vw;
     height: 10vw;
-    top: calc(60vh / 2);
     left: calc(50vw / 2);
 
     display: flex;
@@ -239,22 +238,24 @@ h1, h2, h3, h4, h5 {
     justify-content: space-between;
     padding: 0.5vw;
 
-    background-color: var(--blue4);
+    background: var(--blue5);
+    border: 0.5vw solid var(--gold3);
     border-radius: 0.5vw;
 
     font-size: 4vw;
     transition: 0.2s;
-
-    border: 0.25vw solid var(--blue1);
 }
 
 #api-key-dialog-shown {
+    z-index: 9999;
     opacity: 100%;
+    top: calc(60vh / 2);
 }
 
 #api-key-dialog-hidden {
     opacity: 0;
     pointer-events: none;
+    top: -100vh;
 }
 
 #api-input {
@@ -276,10 +277,6 @@ h1, h2, h3, h4, h5 {
     outline: none;
     border: 0.25vw solid var(--blue2);
     background-color: var(--blue6);
-}
-
-#api-input:valid {
-    border-color: green;
 }
 
 #api-input:invalid {
@@ -380,6 +377,7 @@ h1, h2, h3, h4, h5 {
     font-weight: lighter;
     font-style: italic;
     color: var(--blue1);
+    white-space:pre-wrap;
 }
 
 #results {

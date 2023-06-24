@@ -40,6 +40,7 @@ const ENGLISH_CODE = "en_GB";
 
 const STATUS_LOADING = "Database loading...";
 const STATUS_LOADED = "Search any summoner name for recommendations!";
+const STATUS_INVALID_KEY = "Invalid API Key!\n Get one from \nhttps://developer.riotgames.com/";
 
 const DISPLAY_START_AMOUNT = 5;
 const DISPLAY_ADD_AMOUNT = 5;
@@ -57,7 +58,14 @@ const BOT_PREFIX = "120";
 async function initialize()
 {
     displayAmount = DISPLAY_START_AMOUNT;
-    await getRegionInfoAndLoadGlobals();
+    try
+    {
+        await getRegionInfoAndLoadGlobals();
+    }
+    catch
+    {
+        informationDisplay.textContent = STATUS_INVALID_KEY;
+    }
 }
 
 async function getRegionInfoAndLoadGlobals()
@@ -246,6 +254,10 @@ const challengeInfoProgressBar = document.querySelector("#challenge-info-progres
 
 function showChallenge(id)
 {
+    if (APIDialog.id === API_DIALOG_SHOW_ID)
+    {
+        hideAPIDialog();
+    }
     challengeInfoDisplay.id = CHALLENGE_INFO_SHOW_ID;
 
     const challToDisplay = playerFullData.filter(data => {
@@ -295,6 +307,12 @@ let lastAPIDialogValue;
 
 function showAPIDialog()
 {
+    APIInput.focus();
+    if (challengeInfoDisplay.id == CHALLENGE_INFO_SHOW_ID)
+    {
+        hideChallenge();
+    }
+
     APIDialog.id = API_DIALOG_SHOW_ID;
     APIInput.disabled = false;
     lastAPIDialogValue = APIInput.value;
@@ -307,7 +325,8 @@ function hideAPIDialog()
     APIKey = APIInput.value;   
     if (APIKey !== lastAPIDialogValue) // avoid unnecessary loads
     {
-        getRegionInfoAndLoadGlobals();
+        initialize();
+        clearColumns();
     }
 }
 
@@ -523,6 +542,15 @@ APIButton.addEventListener("click", function(event) {
 
 APIDialog.addEventListener("click", function(event) {
     event.stopPropagation();
+});
+
+APIInput.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        // Trigger the button element with a click
+        hideAPIDialog();
+    }
 });
 
 document.addEventListener("click", () => {
