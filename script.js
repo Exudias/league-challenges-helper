@@ -47,6 +47,9 @@ const DISPLAY_ADD_AMOUNT = 5;
 const CHALLENGE_INFO_HIDE_ID = "challenge-full-info-hidden";
 const CHALLENGE_INFO_SHOW_ID = "challenge-full-info-shown";
 
+const API_DIALOG_HIDE_ID = "api-key-dialog-hidden";
+const API_DIALOG_SHOW_ID = "api-key-dialog-shown";
+
 const ARAM_PREFIX = "101";
 const BOT_PREFIX = "120";
 
@@ -288,17 +291,24 @@ function hideChallenge()
     challengeInfoProgressBar.value = 0;
 }
 
-const API_DIALOG_HIDE_ID = "api-key-dialog-hidden";
-const API_DIALOG_SHOW_ID = "api-key-dialog-shown";
+let lastAPIDialogValue;
 
 function showAPIDialog()
 {
     APIDialog.id = API_DIALOG_SHOW_ID;
+    APIInput.disabled = false;
+    lastAPIDialogValue = APIInput.value;
 }
 
 function hideAPIDialog()
 {
     APIDialog.id = API_DIALOG_HIDE_ID;
+    APIInput.disabled = true;
+    APIKey = APIInput.value;   
+    if (APIKey !== lastAPIDialogValue) // avoid unnecessary loads
+    {
+        getRegionInfoAndLoadGlobals();
+    }
 }
 
 function clearColumns()
@@ -370,14 +380,14 @@ async function getRegionChallengePercentilesJSON(region) // returns object with 
 {
     const PERCENTILES_ENDPOINT = "https://" + region + PARTIAL_PERCENTILES_ENDPOINT;
 
-    return JSON.parse(await makeRequest("GET", PERCENTILES_ENDPOINT + "?APIKey=" + APIKey));
+    return JSON.parse(await makeRequest("GET", PERCENTILES_ENDPOINT + "?api_key=" + APIKey));
 }
 
 async function getRegionChallengeConfigJSON(region) // returns list of objects
 {
     const CONFIG_ENDPOINT = "https://" + region + PARTIAL_CONFIG_ENDPOINT;
 
-    return JSON.parse(await makeRequest("GET", CONFIG_ENDPOINT + "?APIKey=" + APIKey));
+    return JSON.parse(await makeRequest("GET", CONFIG_ENDPOINT + "?api_key=" + APIKey));
 }
 
 async function getPlayerDataJSONFromName(name)
@@ -385,7 +395,7 @@ async function getPlayerDataJSONFromName(name)
     const currentRegion = regionDropdown.value;
     const SUMMONERBYNAME_ENDPOINT = "https://" + currentRegion + PARTIAL_SUMMONERBYNAME_ENDPOINT + name;
 
-    const summoner = await makeRequest("GET", SUMMONERBYNAME_ENDPOINT + "?APIKey=" + APIKey);
+    const summoner = await makeRequest("GET", SUMMONERBYNAME_ENDPOINT + "?api_key=" + APIKey);
 
     return await getChallengeDataJSONFromPUUID(JSON.parse(summoner).puuid);
 }
@@ -395,7 +405,7 @@ async function getChallengeDataJSONFromPUUID(puuid)
     const currentRegion = regionDropdown.value;
     const PLAYERDATA_ENDPOINT = "https://" + currentRegion + PARTIAL_PLAYERDATA_ENDPOINT + puuid;
 
-    return JSON.parse(await makeRequest("GET", PLAYERDATA_ENDPOINT + "?APIKey=" + APIKey));
+    return JSON.parse(await makeRequest("GET", PLAYERDATA_ENDPOINT + "?api_key=" + APIKey));
 }
 
 /// Helper functions
@@ -451,6 +461,7 @@ const informationDisplay = document.querySelector("#information");
 // API key display
 const APIButton = document.querySelector("#api-button");
 const APIDialog = document.querySelector("#api-key-dialog-hidden");
+const APIInput = document.querySelector("#api-input");
 // Challenge full display
 const challengeInfoDisplay = document.querySelector(".challenge-info");
 const challengeInfoClose = document.querySelector("#close-button");
@@ -463,7 +474,7 @@ let loadedPlayer;
 let loadingDatabase;
 let displayAmount;
 
-let APIKey = ""; // RGAPI-774346c7-5896-43aa-9a6e-d1acce866407
+let APIKey = "";
 
 //// Events
 regionDropdown.addEventListener("change", async () => {
@@ -515,8 +526,14 @@ APIDialog.addEventListener("click", function(event) {
 });
 
 document.addEventListener("click", () => {
-    hideChallenge();
-    hideAPIDialog();
+    if (challengeInfoDisplay.id == CHALLENGE_INFO_SHOW_ID)
+    {
+        hideChallenge();
+    }
+    if (APIDialog.id === API_DIALOG_SHOW_ID)
+    {
+        hideAPIDialog();
+    }
 });
 
 document.addEventListener("keyup", function(event) {
