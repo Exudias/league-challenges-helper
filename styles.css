@@ -214,8 +214,9 @@ h1, h2, h3, h4, h5 {
     text-align: center;
 
     color: var(--blue1);
-    background-color: var(--blue4);
+    background-color: var(--blue5);
     border: 0.25vw solid var(--blue3);
+    border-radius: 0.5vw;
 }
 
 #api-button:hover {
