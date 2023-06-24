@@ -203,6 +203,25 @@ h1, h2, h3, h4, h5 {
     padding: 12px 0px;
 }
 
+#api-button {
+    font-family: spiegel;
+    width: 50%;
+    font-size: clamp(12px, 1.5vw, 120px);
+    text-align: center;
+
+    color: var(--blue1);
+    background-color: var(--blue4);
+    border: 0.25vw solid var(--blue3);
+}
+
+#api-button:hover {
+    border: 0.25vw solid var(--blue2);
+}
+
+#api-button:active {
+    color: var(--blue2);
+}
+
 #input-container {
 
     display: flex;

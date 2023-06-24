@@ -437,6 +437,8 @@ const moreButton = document.querySelector("#more-button");
 const errorDisplay = document.querySelector("#error-display");
 // Information display
 const informationDisplay = document.querySelector("#information");
+// API key display
+const APIstatusDisplay = document.querySelector("#status");
 // Challenge full display
 const challengeInfoDisplay = document.querySelector(".challenge-info");
 const challengeInfoClose = document.querySelector("#close-button");
