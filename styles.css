@@ -152,6 +152,10 @@ html {
     box-sizing: inherit;
 }
 
+p {
+    margin: 0;
+}
+
 body {
     margin: 0;
     background: var(--hextech-black);
@@ -220,6 +224,63 @@ h1, h2, h3, h4, h5 {
 
 #api-button:active {
     color: var(--blue2);
+}
+
+#api-key-dialog-shown, #api-key-dialog-hidden {
+    position: fixed;
+    width: 50vw;
+    height: 10vw;
+    top: calc(60vh / 2);
+    left: calc(50vw / 2);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5vw;
+
+    background-color: var(--blue4);
+    border-radius: 0.5vw;
+
+    font-size: 4vw;
+    transition: 0.2s;
+}
+
+#api-key-dialog-shown {
+    opacity: 100%;
+}
+
+#api-key-dialog-hidden {
+    opacity: 0;
+}
+
+#api-input {
+    width: 78%;
+    height: 2.5vw;
+    
+    background-color: var(--blue6);
+
+    border: 0.25vw solid var(--blue3);
+
+    text-align: left;
+    
+    color: #CDFAFA;
+    font-family: spiegel;
+    font-size: 1.65vw;
+}
+
+#api-input:focus {
+    outline: none;
+    border: 0.25vw solid var(--blue2);
+    background-color: var(--blue6);
+}
+
+#api-input:valid {
+    border-color: green;
+}
+
+#api-input:invalid {
+    border-color: red;
 }
 
 #input-container {
