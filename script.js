@@ -502,7 +502,7 @@ regionDropdown.addEventListener("change", async () => {
     playerFullData = undefined;
     clearColumns();
 
-    await getRegionInfoAndLoadGlobals();
+    initialize();
 });
 
 playerNameInput.addEventListener("keypress", function(event) {
