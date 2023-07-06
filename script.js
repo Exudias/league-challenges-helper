@@ -243,10 +243,10 @@ function displayInColumns(data, amountToDisplay)
         closestEntry.onclick = function(event){event.stopPropagation(); showChallenge(sortedByClosest[i].id)};
         increaseEntry.onclick = function(event){event.stopPropagation(); showChallenge(sortedByBiggestIncrease[i].id)};
     }
-    console.log(playerFullData);
 }
 
 const challengeLevelDisplay = document.querySelector("#level-rank");
+const challengeLevelPoints = document.querySelector("#rankup-points");
 const challengeNameDisplay = document.querySelector("#challenge-name");
 const challengeDescriptionDisplay = document.querySelector("#challenge-info-description");
 const challengeInfoProgressNumbers = document.querySelector("#challenge-info-progress-numbers"); 
@@ -264,9 +264,6 @@ function showChallenge(id)
         if (data.id === id) return true;
     })[0];
 
-    const nextLevel = `${Object.keys(LEVEL_INFORMATION).filter(level => {
-        if (LEVEL_INFORMATION[level].level === challToDisplay.nextLevel) return true;
-    })[0]}\n(${challToDisplay.pointsFromLevelUp}p)`;
     const name = challToDisplay.name;
     const desc = challToDisplay.description;
     const pointsDisplay = `${challToDisplay.playerScore}/${challToDisplay.thresholds[challToDisplay.nextLevel]}`;
@@ -286,6 +283,7 @@ function showChallenge(id)
     const nextRankDisplay = challengeLevelDisplay.children[2];
     currentRankDisplay.src = `images/ranks/${challToDisplay.playerLevel}.png`;
     nextRankDisplay.src = `images/ranks/${challToDisplay.nextLevel}.png`;
+    challengeLevelPoints.innerText = `${challToDisplay.pointsFromLevelUp}p`;
 
     challengeNameDisplay.innerText = name;
     challengeDescriptionDisplay.innerText += desc.replace(/<\/?[^>]+(>|$)/g, "");
