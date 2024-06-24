@@ -30,8 +30,9 @@ const POINTS_FROM_LEVEL_ID =
 
 const PARTIAL_CONFIG_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/config";
 const PARTIAL_PERCENTILES_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/percentiles";
-const PARTIAL_SUMMONERBYNAME_ENDPOINT = ".api.riotgames.com/lol/summoner/v4/summoners/by-name/";
+//const PARTIAL_SUMMONERBYNAME_ENDPOINT = ".api.riotgames.com/lol/summoner/v4/summoners/by-name/";
 const PARTIAL_PLAYERDATA_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/player-data/";
+const PARTIAL_SUMMONERBYID_ENDPOINT = ".api.riotgames.com/riot/account/v1/accounts/by-riot-id/";
 
 const ERROR_PLAYER_NOT_FOUND = "PLAYER NOT FOUND";
 const ERROR_DATABASE_NOT_LOADED = "DATABASE NOT LOADED, TRY AGAIN";
@@ -91,7 +92,10 @@ async function search()
     let playerData;
     try
     {
-        playerData = await getPlayerDataJSONFromName(searchedPlayer);
+        let splitName = searchedPlayer.split("#");
+        let name = splitName[0];
+        let tag = splitName[1];
+        playerData = await getPlayerDataJSONFromName(name, tag);
     }
     catch
     {
@@ -407,12 +411,12 @@ async function getRegionChallengeConfigJSON(region) // returns list of objects
     return JSON.parse(await makeRequest("GET", CONFIG_ENDPOINT + "?api_key=" + APIKey));
 }
 
-async function getPlayerDataJSONFromName(name)
+async function getPlayerDataJSONFromName(name, tag)
 {
-    const currentRegion = regionDropdown.value;
-    const SUMMONERBYNAME_ENDPOINT = "https://" + currentRegion + PARTIAL_SUMMONERBYNAME_ENDPOINT + name;
+    const currentRegion = "europe";
+    const SUMMONERBYID_ENDPOINT = "https://" + currentRegion + PARTIAL_SUMMONERBYID_ENDPOINT + name + "/" + tag;
 
-    const summoner = await makeRequest("GET", SUMMONERBYNAME_ENDPOINT + "?api_key=" + APIKey);
+    const summoner = await makeRequest("GET", SUMMONERBYID_ENDPOINT + "?api_key=" + APIKey);
 
     return await getChallengeDataJSONFromPUUID(JSON.parse(summoner).puuid);
 }
