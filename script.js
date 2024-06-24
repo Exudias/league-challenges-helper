@@ -411,12 +411,14 @@ async function getRegionChallengeConfigJSON(region) // returns list of objects
     return JSON.parse(await makeRequest("GET", CONFIG_ENDPOINT + "?api_key=" + APIKey));
 }
 
+const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+
 async function getPlayerDataJSONFromName(name, tag)
 {
     const currentRegion = "europe";
     const SUMMONERBYID_ENDPOINT = "https://" + currentRegion + PARTIAL_SUMMONERBYID_ENDPOINT + name + "/" + tag;
 
-    const summoner = await makeRequest("GET", SUMMONERBYID_ENDPOINT + "?api_key=" + APIKey);
+    const summoner = await makeRequest("GET", corsProxy + SUMMONERBYID_ENDPOINT + "?api_key=" + APIKey);
 
     return await getChallengeDataJSONFromPUUID(JSON.parse(summoner).puuid);
 }
