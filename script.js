@@ -59,7 +59,6 @@ async function fetchData(url)
 {
     const resp = await fetch('/.netlify/functions/fetchApiKey');
     const respJSON = await resp.json();
-    console.log(respJSON.message);
 
     try 
     {
@@ -88,8 +87,6 @@ async function fetchData(url)
 
 async function initialize()
 {
-    APIKey = await fetch('/.netlify/functions/fetchApiKey').then(response => response.json().message);
-
     displayAmount = DISPLAY_START_AMOUNT;
     try
     {
@@ -338,33 +335,6 @@ function hideChallenge()
     challengeInfoProgressBar.value = 0;
 }
 
-let lastAPIDialogValue;
-
-function showAPIDialog()
-{
-    APIInput.focus();
-    if (challengeInfoDisplay.id == CHALLENGE_INFO_SHOW_ID)
-    {
-        hideChallenge();
-    }
-
-    APIDialog.id = API_DIALOG_SHOW_ID;
-    APIInput.disabled = false;
-    lastAPIDialogValue = APIInput.value;
-}
-
-function hideAPIDialog()
-{
-    APIDialog.id = API_DIALOG_HIDE_ID;
-    APIInput.disabled = true;
-    APIKey = APIInput.value;   
-    if (APIKey !== lastAPIDialogValue) // avoid unnecessary loads
-    {
-        initialize();
-        clearColumns();
-    }
-}
-
 function clearColumns()
 {
     resultsContainer.classList.add("hidden");
@@ -488,10 +458,6 @@ const moreButton = document.querySelector("#more-button");
 const errorDisplay = document.querySelector("#error-display");
 // Information display
 const informationDisplay = document.querySelector("#information");
-// API key display
-const APIButton = document.querySelector("#api-button");
-const APIDialog = document.querySelector("#api-key-dialog-hidden");
-const APIInput = document.querySelector("#api-input");
 // Challenge full display
 const challengeInfoDisplay = document.querySelector(".challenge-info");
 const challengeInfoClose = document.querySelector("#close-button");
