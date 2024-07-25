@@ -442,6 +442,9 @@ async function getRegionChallengeConfigJSON(region) // returns list of objects
 {
     const CONFIG_ENDPOINT = region + PARTIAL_CONFIG_ENDPOINT;
 
+    let result = await fetchData(CONFIG_ENDPOINT);
+    console.log(result);
+
     return JSON.parse(await fetchData(CONFIG_ENDPOINT));
 }
 
