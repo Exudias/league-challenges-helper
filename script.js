@@ -28,10 +28,9 @@ const POINTS_FROM_LEVEL_ID =
     8: 100,
 }
 
-const PARTIAL_CONFIG_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/config";
-const PARTIAL_PERCENTILES_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/percentiles";
-//const PARTIAL_SUMMONERBYNAME_ENDPOINT = ".api.riotgames.com/lol/summoner/v4/summoners/by-name/";
-const PARTIAL_PLAYERDATA_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/player-data/";
+const PARTIAL_CONFIG_ENDPOINT = ".api.riotgames.com/api/challenges/v1/challenges/config";
+const PARTIAL_PERCENTILES_ENDPOINT = ".api.riotgames.com/api/challenges/v1/challenges/percentiles";
+const PARTIAL_PLAYERDATA_ENDPOINT = ".api.riotgames.com/api/challenges/v1/player-data/";
 const PARTIAL_SUMMONERBYID_ENDPOINT = ".api.riotgames.com/riot/account/v1/accounts/by-riot-id/";
 
 const ERROR_PLAYER_NOT_FOUND = "PLAYER NOT FOUND";
@@ -428,14 +427,14 @@ async function getRegionInformation(region)
 // GET from API functions
 async function getRegionChallengePercentilesJSON(region) // returns object with ID key
 {
-    const PERCENTILES_ENDPOINT = "https://" + region + PARTIAL_PERCENTILES_ENDPOINT;
+    const PERCENTILES_ENDPOINT = region + PARTIAL_PERCENTILES_ENDPOINT;
 
     return JSON.parse(await fetchData(PERCENTILES_ENDPOINT));
 }
 
 async function getRegionChallengeConfigJSON(region) // returns list of objects
 {
-    const CONFIG_ENDPOINT = "https://" + region + PARTIAL_CONFIG_ENDPOINT;
+    const CONFIG_ENDPOINT = region + PARTIAL_CONFIG_ENDPOINT;
 
     return JSON.parse(await fetchData(CONFIG_ENDPOINT));
 }
@@ -443,7 +442,7 @@ async function getRegionChallengeConfigJSON(region) // returns list of objects
 async function getPlayerDataJSONFromName(name, tag)
 {
     const currentRegion = "europe";
-    const SUMMONERBYID_ENDPOINT = "https://" + currentRegion + PARTIAL_SUMMONERBYID_ENDPOINT + name + "/" + tag;
+    const SUMMONERBYID_ENDPOINT = currentRegion + PARTIAL_SUMMONERBYID_ENDPOINT + name + "/" + tag;
 
     const summoner = await fetchData(SUMMONERBYID_ENDPOINT);
 
@@ -453,7 +452,7 @@ async function getPlayerDataJSONFromName(name, tag)
 async function getChallengeDataJSONFromPUUID(puuid)
 {
     const currentRegion = regionDropdown.value;
-    const PLAYERDATA_ENDPOINT = "https://" + currentRegion + PARTIAL_PLAYERDATA_ENDPOINT + puuid;
+    const PLAYERDATA_ENDPOINT = currentRegion + PARTIAL_PLAYERDATA_ENDPOINT + puuid;
 
     return JSON.parse(await fetchData(PLAYERDATA_ENDPOINT));
 }
