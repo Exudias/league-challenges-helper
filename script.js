@@ -77,6 +77,7 @@ async function fetchData(url)
             throw new Error('Network response was not OK');
         }
         const data = await response.json();
+        console.log(data);
         return data;
     }
     catch (error) 
