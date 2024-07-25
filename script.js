@@ -58,7 +58,10 @@ const BOT_PREFIX = "120";
 async function fetchData(url) 
 {
     const resp = await fetch('/.netlify/functions/fetchApiKey');
+    const respJSON = await resp.json();
     console.log(resp);
+    console.log(resp.body);
+    console.log(respJSON);
 
     try 
     {
