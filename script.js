@@ -435,7 +435,7 @@ async function getRegionChallengePercentilesJSON(region) // returns object with 
 {
     const PERCENTILES_ENDPOINT = region + PARTIAL_PERCENTILES_ENDPOINT;
 
-    return JSON.parse(await fetchData(PERCENTILES_ENDPOINT));
+    return fetchData(PERCENTILES_ENDPOINT);
 }
 
 async function getRegionChallengeConfigJSON(region) // returns list of objects
@@ -443,9 +443,8 @@ async function getRegionChallengeConfigJSON(region) // returns list of objects
     const CONFIG_ENDPOINT = region + PARTIAL_CONFIG_ENDPOINT;
 
     let result = await fetchData(CONFIG_ENDPOINT);
-    console.log(result);
 
-    return JSON.parse(await fetchData(CONFIG_ENDPOINT));
+    return result;
 }
 
 async function getPlayerDataJSONFromName(name, tag)
