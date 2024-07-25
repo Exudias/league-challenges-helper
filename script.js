@@ -65,7 +65,7 @@ async function fetchData(url)
                 "Accept-Language": "en-US,en;q=0.9,bg;q=0.8",
                 "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
                 "Origin": "https://developer.riotgames.com",
-                "X-Riot-Token": await fetch('/.netlify/functions/fetchApiKey').then(response => response.json().message)
+                "X-Riot-Token": await fetch('https://lolchallengehelper.netlify.app/.netlify/functions/fetchApiKey').then(response => response.json().message)
             }
         });
         if (!response.ok)
