@@ -1,3 +1,5 @@
+import fetchData from "./fetchData";
+
 // Constants
 const LEVEL_INFORMATION = 
 {
@@ -403,24 +405,22 @@ async function getRegionChallengePercentilesJSON(region) // returns object with 
 {
     const PERCENTILES_ENDPOINT = "https://" + region + PARTIAL_PERCENTILES_ENDPOINT;
 
-    return JSON.parse(await makeRequest("GET", PERCENTILES_ENDPOINT + "?api_key=" + APIKey));
+    return JSON.parse(await fetchData(PERCENTILES_ENDPOINT));
 }
 
 async function getRegionChallengeConfigJSON(region) // returns list of objects
 {
     const CONFIG_ENDPOINT = "https://" + region + PARTIAL_CONFIG_ENDPOINT;
 
-    return JSON.parse(await makeRequest("GET", CONFIG_ENDPOINT + "?api_key=" + APIKey));
+    return JSON.parse(await fetchData(CONFIG_ENDPOINT));
 }
-
-const corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
 async function getPlayerDataJSONFromName(name, tag)
 {
     const currentRegion = "europe";
     const SUMMONERBYID_ENDPOINT = "https://" + currentRegion + PARTIAL_SUMMONERBYID_ENDPOINT + name + "/" + tag;
 
-    const summoner = await makeRequest("GET", corsProxy + SUMMONERBYID_ENDPOINT + "?api_key=" + APIKey);
+    const summoner = await fetchData(SUMMONERBYID_ENDPOINT);
 
     return await getChallengeDataJSONFromPUUID(JSON.parse(summoner).puuid);
 }
@@ -430,33 +430,7 @@ async function getChallengeDataJSONFromPUUID(puuid)
     const currentRegion = regionDropdown.value;
     const PLAYERDATA_ENDPOINT = "https://" + currentRegion + PARTIAL_PLAYERDATA_ENDPOINT + puuid;
 
-    return JSON.parse(await makeRequest("GET", PLAYERDATA_ENDPOINT + "?api_key=" + APIKey));
-}
-
-/// Helper functions
-function makeRequest(method, url) // xhr request with promise (from https://stackoverflow.com/a/48969580)
-{
-    return new Promise(function (resolve, reject) {
-        let xhr = new XMLHttpRequest();
-        xhr.open(method, url);
-        xhr.onload = function () {
-            if (this.status >= 200 && this.status < 300) {
-                resolve(xhr.response);
-            } else {
-                reject({
-                    status: this.status,
-                    statusText: xhr.statusText
-                });
-            }
-        };
-        xhr.onerror = function () {
-            reject({
-                status: this.status,
-                statusText: xhr.statusText
-            });
-        };
-        xhr.send();
-    });
+    return JSON.parse(await fetchData(PLAYERDATA_ENDPOINT));
 }
 
 function getMaxThresholdNumeric(challengeThresholds)
