@@ -40,16 +40,13 @@ const ENGLISH_CODE = "en_GB";
 
 const STATUS_LOADING = "Database loading...";
 const STATUS_LOADED = "Search any summoner name for recommendations!";
-const STATUS_INVALID_KEY = "Invalid API Key!\n Get one from \nhttps://developer.riotgames.com/";
+const STATUS_INVALID_KEY = "API connection is down! Sorry...";
 
 const DISPLAY_START_AMOUNT = 5;
 const DISPLAY_ADD_AMOUNT = 5;
 
 const CHALLENGE_INFO_HIDE_ID = "challenge-full-info-hidden";
 const CHALLENGE_INFO_SHOW_ID = "challenge-full-info-shown";
-
-const API_DIALOG_HIDE_ID = "api-key-dialog-hidden";
-const API_DIALOG_SHOW_ID = "api-key-dialog-shown";
 
 const ARAM_PREFIX = "101";
 const BOT_PREFIX = "120";
@@ -288,10 +285,6 @@ const challengeInfoProgressBar = document.querySelector("#challenge-info-progres
 
 function showChallenge(id)
 {
-    if (APIDialog.id === API_DIALOG_SHOW_ID)
-    {
-        hideAPIDialog();
-    }
     challengeInfoDisplay.id = CHALLENGE_INFO_SHOW_ID;
 
     const challToDisplay = playerFullData.filter(data => {
@@ -470,8 +463,6 @@ let loadedPlayer;
 let loadingDatabase;
 let displayAmount;
 
-let APIKey = "";
-
 //// Events
 regionDropdown.addEventListener("change", async () => {
     // void loaded player data
@@ -505,39 +496,10 @@ challengeInfoDisplay.addEventListener("click", function(event) {
     event.stopPropagation();
 });
 
-APIButton.addEventListener("click", function(event) {
-    event.stopPropagation();
-    if (APIDialog.id === API_DIALOG_HIDE_ID)
-    {
-        showAPIDialog();
-    }
-    else
-    {
-        hideAPIDialog();
-    }
-});
-
-APIDialog.addEventListener("click", function(event) {
-    event.stopPropagation();
-});
-
-APIInput.addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-        // Cancel the default action, if needed
-        event.preventDefault();
-        // Trigger the button element with a click
-        hideAPIDialog();
-    }
-});
-
 document.addEventListener("click", () => {
     if (challengeInfoDisplay.id == CHALLENGE_INFO_SHOW_ID)
     {
         hideChallenge();
-    }
-    if (APIDialog.id === API_DIALOG_SHOW_ID)
-    {
-        hideAPIDialog();
     }
 });
 
