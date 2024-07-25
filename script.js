@@ -454,7 +454,7 @@ async function getPlayerDataJSONFromName(name, tag)
 
     const summoner = await fetchData(SUMMONERBYID_ENDPOINT);
 
-    return await getChallengeDataJSONFromPUUID(JSON.parse(summoner).puuid);
+    return await getChallengeDataJSONFromPUUID(summoner.puuid);
 }
 
 async function getChallengeDataJSONFromPUUID(puuid)
@@ -462,7 +462,7 @@ async function getChallengeDataJSONFromPUUID(puuid)
     const currentRegion = regionDropdown.value;
     const PLAYERDATA_ENDPOINT = currentRegion + PARTIAL_PLAYERDATA_ENDPOINT + puuid;
 
-    return JSON.parse(await fetchData(PLAYERDATA_ENDPOINT));
+    return await fetchData(PLAYERDATA_ENDPOINT);
 }
 
 function getMaxThresholdNumeric(challengeThresholds)
