@@ -58,6 +58,8 @@ const BOT_PREFIX = "120";
 //// Functions
 async function initialize()
 {
+    APIKey = await fetch('/.netlify/functions/fetchApiKey').then(response => response.json().message);
+
     displayAmount = DISPLAY_START_AMOUNT;
     try
     {
