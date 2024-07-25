@@ -28,9 +28,9 @@ const POINTS_FROM_LEVEL_ID =
     8: 100,
 }
 
-const PARTIAL_CONFIG_ENDPOINT = ".api.riotgames.com/api/challenges/v1/challenges/config";
-const PARTIAL_PERCENTILES_ENDPOINT = ".api.riotgames.com/api/challenges/v1/challenges/percentiles";
-const PARTIAL_PLAYERDATA_ENDPOINT = ".api.riotgames.com/api/challenges/v1/player-data/";
+const PARTIAL_CONFIG_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/config";
+const PARTIAL_PERCENTILES_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/challenges/percentiles";
+const PARTIAL_PLAYERDATA_ENDPOINT = ".api.riotgames.com/lol/challenges/v1/player-data/";
 const PARTIAL_SUMMONERBYID_ENDPOINT = ".api.riotgames.com/riot/account/v1/accounts/by-riot-id/";
 
 const ERROR_PLAYER_NOT_FOUND = "PLAYER NOT FOUND";
@@ -59,7 +59,7 @@ async function fetchData(url)
 {
     try 
     {
-        const response = await fetch(url, {
+        const response = await fetch(`api/${url}`, {
             headers: {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
                 "Accept-Language": "en-US,en;q=0.9,bg;q=0.8",

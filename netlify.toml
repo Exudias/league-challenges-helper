@@ -1,13 +1,6 @@
 [[redirects]]
-  from = ":pre/api/:after"
-  to = "https://:pre/lol/:after"
-  status = 200
-  force = true
-  headers = {X-From = "Netlify"}
-
-[[redirects]]
-  from = ":pre/riot/:after"
-  to = "https://:pre/riot/:after"
+  from = "/api/*"
+  to = "https://:splat"
   status = 200
   force = true
   headers = {X-From = "Netlify"}
