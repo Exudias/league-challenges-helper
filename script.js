@@ -96,8 +96,9 @@ async function initialize()
     {
         await getRegionInfoAndLoadGlobals();
     }
-    catch
+    catch(err)
     {
+        console.error(err);
         informationDisplay.textContent = STATUS_INVALID_KEY;
     }
 }
