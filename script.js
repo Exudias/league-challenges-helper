@@ -59,9 +59,7 @@ async function fetchData(url)
 {
     const resp = await fetch('/.netlify/functions/fetchApiKey');
     const respJSON = await resp.json();
-    console.log(resp);
-    console.log(resp.body);
-    console.log(respJSON);
+    console.log(respJSON.message);
 
     try 
     {
@@ -71,7 +69,7 @@ async function fetchData(url)
                 "Accept-Language": "en-US,en;q=0.9,bg;q=0.8",
                 "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
                 "Origin": "https://developer.riotgames.com",
-                "X-Riot-Token": await fetch('/.netlify/functions/fetchApiKey').then(response => response.json().message)
+                "X-Riot-Token": respJSON.message
             }
         });
         if (!response.ok)
