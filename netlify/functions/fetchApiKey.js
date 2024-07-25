@@ -1,7 +1,7 @@
 export const handler = async () => {
   const value = process.env.RIOT_API_KEY;
 
-  console.log(value);
+  console.log(`Here it is!: ${value}`);
 
   return {
     statusCode: 200,
